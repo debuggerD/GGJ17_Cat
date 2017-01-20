@@ -4,28 +4,33 @@ using UnityEngine;
 
 public class CatScript : MonoBehaviour {
 
+    Rigidbody rigidbody;
+    CharacterController controller;
 	// Use this for initialization
 	void Start () {
-		
-	}
+        rigidbody = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
+    }
 
     // Update is called once per frame
+    Vector3 lastValidPosition;
     void Update() {
         if (Input.GetKey("w"))
         {
-            transform.Translate(new Vector3(1, 0, 0) * Time.deltaTime, Space.World);
+            controller.Move(new Vector3(1, 0, 0) * Time.deltaTime);
         }
         if (Input.GetKey("a"))
         {
-            transform.Translate(new Vector3(0, 0, 1) * Time.deltaTime, Space.World);
+            controller.Move(new Vector3(0, 0, 1) * Time.deltaTime);
+
         }
         if (Input.GetKey("s"))
         {
-            transform.Translate(new Vector3(-1, 0, 0) * Time.deltaTime, Space.World);
+            controller.Move(new Vector3(-1, 0, 0) * Time.deltaTime);
         }
         if (Input.GetKey("d"))
         {
-            transform.Translate(new Vector3(0, 0, -1) * Time.deltaTime, Space.World);
+            controller.Move(new Vector3(0, 0, -1) * Time.deltaTime);
         }
     }
     void FixedUpdate()
@@ -33,12 +38,13 @@ public class CatScript : MonoBehaviour {
 
     }
 
-    void OnTriggerEnter(Collider col)
+
+    void OnCollisionEnter(Collision collision)
     {
-        print("trigger!!");
-        if (col.gameObject.tag == "Wall")
+        print("collision!!");
+        if (collision.gameObject.tag == "Wall")
         {
-            Destroy(col.gameObject);
+            rigidbody.velocity = Vector3.zero;
         }
     }
 
