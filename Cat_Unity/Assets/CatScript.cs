@@ -8,9 +8,28 @@ public class CatScript : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update() {
+        if (Input.GetKey("w"))
+        {
+            transform.Translate(new Vector3(1, 0, 0) * Time.deltaTime, Space.World);
+        }
+        if (Input.GetKey("a"))
+        {
+            transform.Translate(new Vector3(0, 0, 1) * Time.deltaTime, Space.World);
+        }
+        if (Input.GetKey("s"))
+        {
+            transform.Translate(new Vector3(-1, 0, 0) * Time.deltaTime, Space.World);
+        }
+        if (Input.GetKey("d"))
+        {
+            transform.Translate(new Vector3(0, 0, -1) * Time.deltaTime, Space.World);
+        }
+    }
+    void FixedUpdate()
+    {
+
+    }
 }
