@@ -32,4 +32,14 @@ public class CatScript : MonoBehaviour {
     {
 
     }
+
+    void OnTriggerEnter(Collider col)
+    {
+        print("trigger!!");
+        if (col.gameObject.tag == "Wall")
+        {
+            Destroy(col.gameObject);
+        }
+    }
+
 }
