@@ -9,6 +9,7 @@ public class VisionScript : MonoBehaviour {
 	public Vector2[] newUV;
 	public int[] triangles;
     GameObject scientist;
+	GameObject manager;
 
 	// Use this for initialization
 	void Start () {
@@ -29,10 +30,12 @@ public class VisionScript : MonoBehaviour {
 		}
 		mesh.triangles = triangles;
         scientist = GameObject.Find("Scientist");
+		manager = GameObject.Find ("GameManager");
     }
 
 	// Update is called once per frame
 	void Update () {
+		var seeing = manager.GetComponent<GameManagerScript> ().seeing;
         transform.position = scientist.transform.position;
 		var rot = transform.rotation;
 		var delta = Input.mousePosition.x;
@@ -44,6 +47,17 @@ public class VisionScript : MonoBehaviour {
 			float len = SightLength;
 			if (Physics.Raycast (ray, out hit, SightLength)) {
 				len = hit.distance;
+			}
+			for(var j = 1; j <= 40;j++)
+			{
+				Vector3 p = transform.position;
+				p += new Vector3 (Mathf.Cos ((i -delta- 30) / 180f * 3.141592f), 0.01f, Mathf.Sin ((i -delta- 30) / 180f * 3.141592f))*(1f*j/40)*len;
+
+				int gi = (int)(p.z / 0.25f);
+				int gj = (int)(p.x / 0.25f);
+				if (gi >= 0 && gj >= 0 && gi < seeing.GetLength (0) && gj < seeing.GetLength (1)) {
+					seeing [gi, gj] = 1;
+				}
 			}
 			vertices[i] = new Vector3(len*Mathf.Cos((i-30)/180.0f*3.141592f), 0.01f, len*Mathf.Sin((i-30)/180.0f*3.141592f));
 		}

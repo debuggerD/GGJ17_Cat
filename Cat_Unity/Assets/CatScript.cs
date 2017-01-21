@@ -88,11 +88,13 @@ public class CatScript : MonoBehaviour {
 		disintegrated_positions = new float[disintegration.GetLength(0), 2];
 		quantized_pieces = new GameObject[disintegration.GetLength(0)];
 
-        GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, false);
+		manager = GameObject.Find ("GameManager");
+        manager.GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, false);
 
 		qvis = GameObject.Find ("QVisualizer");
     }
 
+	GameObject manager = null;
 	GameObject qvis = null;
 
     // Update is called once per frame
@@ -141,12 +143,10 @@ public class CatScript : MonoBehaviour {
 		// do warp!
 		var pos = qvis.GetComponent<QScript> ().PickPosition ();
 		var p = transform.position;
-		print (pos.x);
-		print( pos.y);
-		print (p.x);
-		print( p.z);
 		p.x = pos.x;
 		p.z = pos.y;
+		var gms = manager.GetComponent<GameManagerScript> ();
+		gms.NotifyCatMove(GameManagerScript.GetGridIPos(p.x, p.z), GameManagerScript.GetGridJPos(p.x, p.z), false);
 		transform.position = p;
 
 		qvis.GetComponent<QScript> ().Clear ();
@@ -201,13 +201,31 @@ public class CatScript : MonoBehaviour {
             GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, true);
         }
 
-		if (Input.GetKeyDown ("q")) {
-		    GetComponentInChildren<SpriteRenderer> ().enabled = !GetComponentInChildren<SpriteRenderer> ().enabled;
-			quantized = !GetComponentInChildren<SpriteRenderer> ().enabled;
-			if (quantized) {
-				StartQuantization ();
-			} else {
-				StopQuantization ();
+		bool force_q = false;
+		if (quantized && !qvis.GetComponent<QScript> ().InCatomCloudForm ()) {
+			force_q = true;
+		}
+		if (force_q || Input.GetKeyDown ("q")) {
+			
+			bool on_sight = false;
+			if (!quantized) {
+				// if cat is inside vision range, cant quantize
+				var seeing = manager.GetComponent<GameManagerScript>().seeing;
+				var gi = (int)(transform.position.z / 0.25f);
+				var gj = (int)(transform.position.x / 0.25f);
+				if (seeing [gi, gj] > 0)
+					on_sight = true;
+			}
+
+			if (!on_sight)
+			{
+                GetComponentInChildren<SpriteRenderer> ().enabled = !GetComponentInChildren<SpriteRenderer> ().enabled;
+                quantized = !GetComponentInChildren<SpriteRenderer> ().enabled;
+				if (quantized) {
+					StartQuantization ();
+				} else {
+					StopQuantization ();
+				}
 			}
 		}
         if (Input.GetKeyDown("space"))

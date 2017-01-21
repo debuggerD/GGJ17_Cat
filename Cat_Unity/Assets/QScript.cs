@@ -40,11 +40,17 @@ public class QScript : MonoBehaviour {
 			return 0;
 		//if (d > 1000)
 		//  d = 1000;
-		return 1 + (int)Mathf.Sqrt (d-1)/10;
+		return 1 + (int)Mathf.Sqrt (d-1)/9;
 	}
 	// Update is called once per frame
 	int sub_tx;
 	int sub_ty;
+
+	public bool InCatomCloudForm()
+	{
+		return energy.Count > 0;
+	}
+
 	public Vector2 PickPosition()
 	{
 		//int pick = Random.Range (0, 10000);
@@ -56,13 +62,16 @@ public class QScript : MonoBehaviour {
 				return new Vector2((kv.Key.Key+sub_tx)/4f, (kv.Key.Value+sub_ty)/4f);
 			}
 		}
-		return Vector2.zero;
+		return lastValidPosition;
 	}
+
+	Vector3 lastValidPosition;
 
 	void Update () {
 		if (!active)
 			return;
 		int[,] pass = manager.GetComponent<GameManagerScript> ().map_wave_pass;
+		var seeing = manager.GetComponent<GameManagerScript> ().seeing;
 		//int[,] mod  = manager.GetComponent<GameManagerScript> ().map_wave_modify;
 		const float scale = 1.0f/4;
 		const int sub_tile_count = 2;
@@ -78,15 +87,28 @@ public class QScript : MonoBehaviour {
 				return false;
 			return pass[ty,tx] > 0;
 		};
+		System.Func<int, int, bool> Seeing = (int x, int y) => {
+			var tx = (sub_tx + x);
+			var ty = (sub_ty + y);
+			if (tx < 0 || ty < 0 || tx >= seeing.GetLength(1) || ty >= seeing.GetLength(0))
+				return false;
+			return seeing[ty, tx] > 0;
 
+		};
+		if (energy.Count > 0)
+			lastValidPosition = PickPosition ();
 		Dictionary<KeyValuePair<int,int>, int> next = new Dictionary<KeyValuePair<int,int>,int>();
 		foreach (var kv in energy) {
 			var k = kv.Key;
 			var v = kv.Value;
+			if (Seeing (k.Key, k.Value))
+				continue;
 			var delta = 0;
 			foreach (var dir in directions) {
 				KeyValuePair<int,int> nk = new KeyValuePair<int,int>(k.Key + dir[0], k.Value + dir[1]);
 				if (!Passable (nk.Key, nk.Value))
+					continue;
+				if (Seeing (nk.Key, nk.Value))
 					continue;
 				int nv = 0;
 				bool has = false;
@@ -190,6 +212,7 @@ public class QScript : MonoBehaviour {
             triangles [idx * 6+5] = idx * 4+3;
             idx += 1;
         }*/
+		GetComponent<MeshFilter> ().mesh.triangles = new int[]{};
 		GetComponent<MeshFilter> ().mesh.vertices = vertices;
 		GetComponent<MeshFilter> ().mesh.triangles = triangles;
 	}
