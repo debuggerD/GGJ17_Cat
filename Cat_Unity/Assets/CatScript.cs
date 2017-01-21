@@ -62,7 +62,8 @@ public class CatScript : MonoBehaviour {
 		for(int i = 0; i < disintegration.GetLength(0); i++) {
 			var go = Instantiate(CatPiece);
 			quantized_pieces[i] = go;
-			go.transform.eulerAngles = new Vector3 (30f, 45f, 0.0f);
+            go.transform.rotation = Quaternion.LookRotation(cam.transform.position - transform.position);
+			//go.transform.eulerAngles = new Vector3 (30f, 45f, 0.0f);
 			go.GetComponent<SpriteRenderer>().color = new Color(
 				disintegration[i,2]/255f,
 				disintegration[i,3]/255f,
@@ -70,8 +71,8 @@ public class CatScript : MonoBehaviour {
 				disintegration[i,5]/255f
 			);
 			var p = this.transform.position;
-			const float scale = 70f;
-			p.x += (disintegration [i, 0]-57f+30f) / scale;
+			const float scale = 130f;
+			p.x -= (disintegration [i, 0]-57f+30f) / scale;
 			p.z -= (disintegration [i, 0]-57f+30f) / scale;
 			p.y -= (disintegration [i, 1]-68.5f+40f) / scale*1.414f;
 			go.transform.position = p;
@@ -163,10 +164,10 @@ public class CatScript : MonoBehaviour {
 					//did_move += 1
 				}
 				var p = this.transform.position;
-				const float scale = 70f;
+				const float scale = 130f;
 				disintegrated_positions [i, 0] = x;
 				disintegrated_positions [i, 1] = y;
-				p.x += (x-57f+30f) / scale;
+				p.x -= (x-57f+30f) / scale;
 				p.z -= (x-57f+30f) / scale;
 				p.y -= (y-68.5f+40f) / scale*1.414f;
 				var go = quantized_pieces [i];
