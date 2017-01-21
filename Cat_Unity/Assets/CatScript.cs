@@ -80,8 +80,8 @@ public class CatScript : MonoBehaviour {
         cam = GameObject.FindWithTag("MainCamera");
 
         // Initialize Logical Position
-        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.5f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
-        transform.rotation = cam.transform.rotation;
+        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.01f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
+        transform.GetChild(0).rotation = cam.transform.rotation;
         m_lastGridPosI = m_kCatLogicalStartI;
         m_lastGridPosJ = m_kCatLogicalStartJ;
         disintegration = FileToArray ("disintegration");
@@ -103,7 +103,8 @@ public class CatScript : MonoBehaviour {
 		for(int i = 0; i < disintegration.GetLength(0); i++) {
 			var go = Instantiate(CatPiece);
 			quantized_pieces[i] = go;
-            go.transform.rotation = Quaternion.LookRotation(cam.transform.position - transform.position);
+            go.transform.rotation = cam.transform.rotation;
+            //go.transform.rotation = Quaternion.LookRotation(cam.transform.position - transform.position);
 			//go.transform.eulerAngles = new Vector3 (30f, 45f, 0.0f);
 			go.GetComponent<SpriteRenderer>().color = new Color(
 				disintegration[i,2]/255f,
@@ -158,10 +159,8 @@ public class CatScript : MonoBehaviour {
 	}
 
     void Update() {
-        Vector3 relativePos = cam.transform.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(relativePos);
-        transform.rotation = rotation;
-
+        transform.GetChild(0).rotation = cam.transform.rotation;
+        
         // Move by WASD
         Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
         if (Input.GetKey("w"))
@@ -203,8 +202,8 @@ public class CatScript : MonoBehaviour {
         }
 
 		if (Input.GetKeyDown ("q")) {
-			GetComponent<SpriteRenderer> ().enabled = !GetComponent<SpriteRenderer> ().enabled;
-			quantized = !GetComponent<SpriteRenderer> ().enabled;
+		    GetComponentInChildren<SpriteRenderer> ().enabled = !GetComponentInChildren<SpriteRenderer> ().enabled;
+			quantized = !GetComponentInChildren<SpriteRenderer> ().enabled;
 			if (quantized) {
 				StartQuantization ();
 			} else {
