@@ -18,19 +18,19 @@ public class CatScript : MonoBehaviour {
     void Update() {
         if (Input.GetKey("w"))
         {
-            controller.Move(new Vector3(1, 0, 0) * Time.deltaTime * speed);
+            controller.Move(new Vector3(1, 0, 1) * Time.deltaTime * speed);
         }
         if (Input.GetKey("a"))
         {
-            controller.Move(new Vector3(0, 0, 1) * Time.deltaTime * speed);
+            controller.Move(new Vector3(-1, 0, 1) * Time.deltaTime * speed);
         }
         if (Input.GetKey("s"))
         {
-            controller.Move(new Vector3(-1, 0, 0) * Time.deltaTime * speed);
+            controller.Move(new Vector3(-1, 0, -1) * Time.deltaTime * speed);
         }
         if (Input.GetKey("d"))
         {
-            controller.Move(new Vector3(0, 0, -1) * Time.deltaTime * speed);
+            controller.Move(new Vector3(1, 0, -1) * Time.deltaTime * speed);
         }
         if (Input.GetKeyDown("space"))
         {

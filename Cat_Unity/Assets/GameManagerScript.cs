@@ -30,13 +30,6 @@ public class GameManagerScript : MonoBehaviour {
 
     void GetMetaData()
     {
-        //string text = System.IO.File.ReadAllText(@"C:\Users\Public\TestFolder\WriteText.txt");
-        //string[] lines = System.IO.File.ReadAllLines(@"C:\Users\Public\TestFolder\WriteLines2.txt");
-        //foreach (string line in lines)
-        //{
-        //    Console.WriteLine("\t" + line);
-        //}
-
         int[,] result = new int[width, length];
         TextAsset txtFile = (TextAsset)Resources.Load("map_meta") as TextAsset;
         print(txtFile);
@@ -85,15 +78,15 @@ public class GameManagerScript : MonoBehaviour {
                 {
                     case 0:
                         newObject = Instantiate(Wall);
-                        newObject.transform.position = new Vector3(j * 1, 2, i * 1) * unitLength;
+                        newObject.transform.position = new Vector3(j * 1, 1f, i * 1) * unitLength;
                         break;
                     case 1:
                         newObject = Instantiate(Tile);
-                        newObject.transform.position = new Vector3(j * 1, 0, i * 1) * unitLength;
+                        newObject.transform.position = new Vector3(j * 1, 0f, i * 1) * unitLength;
                         break;
                     case 2:
                         newObject = Instantiate(Wall);
-                        newObject.transform.position = new Vector3(j * 1, 2, i * 1) * unitLength;
+                        newObject.transform.position = new Vector3(j * 1, 1f, i * 1) * unitLength;
                         break;
                     default:
                         break;
