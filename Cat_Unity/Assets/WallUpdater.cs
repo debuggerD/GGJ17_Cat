@@ -15,13 +15,12 @@ public class WallUpdater : MonoBehaviour {
     protected SpriteRenderer m_mySpriteRenderer;
     protected bool m_isUsingFullSizeWall;
 
-    protected bool m_isNeedToUseFullSize;
+    protected bool m_isNeedToUseFullSize = true;
 
     // Use this for initialization
     void Start () {
         m_mySpriteRenderer = GetComponent<Renderer>() as SpriteRenderer;
         m_isUsingFullSizeWall = true;
-        m_isNeedToUseFullSize = true;
         CurrentCat = GameObject.FindWithTag("Player");
     }
 	
