@@ -9,7 +9,25 @@ public class CatScript : MonoBehaviour {
     CharacterController controller;
 	public GameObject CatPiece;
 
-	bool quantized = false;
+    protected float m_lastGridPosI;
+    public float GridPosI
+    {
+        get
+        {
+            return m_lastGridPosI;
+        }
+    }
+
+    protected float m_lastGridPosJ;
+    public float GridPosJ
+    {
+        get
+        {
+            return m_lastGridPosJ;
+        }
+    }
+
+    bool quantized = false;
 	int [,] disintegration;
 	float [,] disintegrated_positions;
 	GameObject[] quantized_pieces;
@@ -42,9 +60,11 @@ public class CatScript : MonoBehaviour {
         controller = GetComponent<CharacterController>();
 
         // Initialize Logical Position
-        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.5f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
+        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.0f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
+        m_lastGridPosI = m_kCatLogicalStartI;
+        m_lastGridPosJ = m_kCatLogicalStartJ;
 
-		disintegration = FileToArray ("disintegration");
+        disintegration = FileToArray ("disintegration");
 		disintegrated_positions = new float[disintegration.GetLength(0), 2];
 		quantized_pieces = new GameObject[disintegration.GetLength(0)];
     }
@@ -113,6 +133,9 @@ public class CatScript : MonoBehaviour {
         {
             moveDir.Normalize();
             controller.Move(moveDir * Time.deltaTime * speed);
+            
+            m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
+            m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
         }
 		if (Input.GetKeyDown ("q")) {
 			GetComponent<SpriteRenderer> ().enabled = !GetComponent<SpriteRenderer> ().enabled;

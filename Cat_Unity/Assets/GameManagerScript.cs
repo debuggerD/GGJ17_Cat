@@ -7,7 +7,10 @@ using System;
 public class GameManagerScript : MonoBehaviour {
 
     public GameObject Tile;
+
     public GameObject NewWall;
+    public GameObject WallCollider;
+
     int width = 0;
     int length = 0;
 
@@ -16,6 +19,8 @@ public class GameManagerScript : MonoBehaviour {
     int[,] map_wave_pass;
     int[,] map_wave_modify;
     int[,] map_wall;
+
+    protected GameObject[,] m_wallObjects;
 
     // Use this for initialization
     void Start () {
@@ -91,6 +96,16 @@ public class GameManagerScript : MonoBehaviour {
         return gridI * m_kUnitLength;
     }
 
+    public static float GetGridIPos(float x, float z)
+    {
+        return z / m_kUnitLength;
+    }
+
+    public static float GetGridJPos(float x, float z)
+    {
+        return x / m_kUnitLength;
+    }
+
     #endregion
 
 
@@ -121,6 +136,7 @@ public class GameManagerScript : MonoBehaviour {
 
     protected void _CreateWallObjects()
     {
+        m_wallObjects = new GameObject[width, length];
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < length; j++)
@@ -139,7 +155,19 @@ public class GameManagerScript : MonoBehaviour {
                 if (createdWallPatch != null)
                 {
                     ApplyNormalWallTransform(createdWallPatch, i, j);
+
+                    WallUpdater wallDrawUpdater = createdWallPatch.GetComponent<WallUpdater>();
+                    if (wallDrawUpdater != null)
+                    {
+                        wallDrawUpdater.gridI = i;
+                        wallDrawUpdater.gridJ = j;
+                    }
+
+                    GameObject createdCollider = Instantiate(WallCollider);
+                    createdCollider.transform.position = new Vector3(GetXPos(i, j), 0, GetZPos(i, j));
+                    createdCollider.transform.localScale = new Vector3(m_kUnitLength, m_kWallHeight, m_kUnitLength);
                 }
+                m_wallObjects[i, j] = createdWallPatch;
             }
         }
     }
@@ -148,7 +176,6 @@ public class GameManagerScript : MonoBehaviour {
 
     protected void ApplyNormalWallTransform(GameObject wallObj, int i, int j)
     {
-        const float halfWallLength = m_kUnitLength * 0.5f;
         wallObj.transform.position = new Vector3(GetXPos(i, j + 1), 0, GetZPos(i, j + 1));
     }
 
