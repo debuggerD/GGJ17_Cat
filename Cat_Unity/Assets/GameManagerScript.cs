@@ -86,6 +86,9 @@ public class GameManagerScript : MonoBehaviour {
 				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
 			}
 		}
+		if (warp_count == 0) {
+			GUI.Box (new Rect(Screen.width*0.25f, Screen.height*0.17f, Screen.width*0.5f,Screen.height*0.15f), "Press [Q] to\nActivate 'Wave' function\n(or `Q'uantize).\nUse WASD to move");
+		}
 	}
 
 	void SaveAchievements()
