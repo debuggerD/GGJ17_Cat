@@ -70,6 +70,8 @@ public class CatScript : MonoBehaviour {
 		disintegrated_positions = new float[disintegration.GetLength(0), 2];
 		quantized_pieces = new GameObject[disintegration.GetLength(0)];
 
+        GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, false);
+
 		qvis = GameObject.Find ("QVisualizer");
     }
 
@@ -161,6 +163,8 @@ public class CatScript : MonoBehaviour {
             
             m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
             m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
+
+            GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, true);
         }
 
 		if (Input.GetKeyDown ("q")) {
