@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using System.Linq;
 
 public class CatScript : MonoBehaviour {
@@ -9,6 +10,10 @@ public class CatScript : MonoBehaviour {
     CharacterController controller;
 	public GameObject CatPiece;
 	public AudioSource QuantumSoundEffect;
+
+	public AudioMixer DefaultMixer;
+	public AudioMixerSnapshot DefaultBGM;
+	public AudioMixerSnapshot QuantumBGM;
 
     bool isFirstFrame;
 
@@ -128,6 +133,7 @@ public class CatScript : MonoBehaviour {
 
 		QuantumSoundEffect.volume = 1f;
 		QuantumSoundEffect.Play();
+		QuantumBGM.TransitionTo(2f);
 
 	}
 
@@ -154,7 +160,7 @@ public class CatScript : MonoBehaviour {
 
 
 		StartCoroutine(fadeOut());
-
+		DefaultBGM.TransitionTo(2f);
 
 	}
 
