@@ -32,17 +32,14 @@ public class GameManagerScript : MonoBehaviour {
     {
         int[,] result = new int[width, length];
         TextAsset txtFile = (TextAsset)Resources.Load("map_meta") as TextAsset;
-        print(txtFile);
         string[] textArray = txtFile.text.Trim().Split('\t');
         width = Int32.Parse(textArray[0]);
         length = Int32.Parse(textArray[1]);
-        print(width);
-        print(length);
     }
 
-    int[,] FileToArray(string filename)
+    int[,] FileToArray(string filename, int w, int h)
     {
-        int[,] result = new int[width, length];
+        int[,] result = new int[w, h];
         TextAsset txtFile = (TextAsset)Resources.Load(filename) as TextAsset;
         string[] lines = txtFile.text.Trim().Split('\n');
         for (int i = 0; i < length; i++)
@@ -58,11 +55,11 @@ public class GameManagerScript : MonoBehaviour {
 
     void ReadMapData()
     {
-        map_move = FileToArray("map_move_m");
-        map_height = FileToArray("map_height_m");
-        map_wave_pass = FileToArray("map_wave_pass_m");
-        map_wave_modify = FileToArray("map_wave_modify_m");
-        map_wall = FileToArray("map_wall_m");
+        map_move = FileToArray("map_move_m", width, length);
+        map_height = FileToArray("map_height_m", width, length);
+        map_wave_pass = FileToArray("map_wave_pass_m", width, length);
+        map_wave_modify = FileToArray("map_wave_modify_m", width, length);
+        map_wall = FileToArray("map_wall_m", width, length);
         CreateMap();
     }
 

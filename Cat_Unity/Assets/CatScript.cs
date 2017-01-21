@@ -45,9 +45,7 @@ public class CatScript : MonoBehaviour {
 
         // Initialize Logical Position
         transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.5f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
-        Vector3 relativePos = cam.transform.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(relativePos);
-        transform.rotation = rotation;
+        transform.rotation = cam.transform.rotation;
 
 		disintegration = FileToArray ("disintegration");
 		disintegrated_positions = new float[disintegration.GetLength(0), 2];

@@ -8,13 +8,13 @@ public class VisionScript : MonoBehaviour {
 	public Vector3[] vertices;
 	public Vector2[] newUV;
 	public int[] triangles;
+    GameObject scientist;
 
 	// Use this for initialization
 	void Start () {
 		Mesh mesh = new Mesh();
 		GetComponent<MeshFilter>().mesh = mesh;
 		vertices = new Vector3[61];
-		print ("babo");
 		for (var i = 0; i < 60; i++) {
 			vertices[i] = new Vector3(SightLength*Mathf.Cos((i-30)/180.0f*3.141592f), 0.01f, SightLength*Mathf.Sin((i-30)/180.0f*3.141592f));
 		}
@@ -28,12 +28,12 @@ public class VisionScript : MonoBehaviour {
 			triangles [i * 3 + 2] = i;
 		}
 		mesh.triangles = triangles;
-
-	}
+        scientist = GameObject.Find("Scientist");
+    }
 
 	// Update is called once per frame
 	void Update () {
-		transform.position = GameObject.FindWithTag ("Uga").transform.position;
+        transform.position = scientist.transform.position;
 		var rot = transform.rotation;
 		var delta = Input.mousePosition.x;
 		rot.eulerAngles = new Vector3 (0.0f, delta, 0.0f);
