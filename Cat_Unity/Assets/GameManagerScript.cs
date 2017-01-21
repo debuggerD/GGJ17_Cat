@@ -37,7 +37,6 @@ public class GameManagerScript : MonoBehaviour {
         //    Console.WriteLine("\t" + line);
         //}
 
-        int[,] result = new int[width, length];
         TextAsset txtFile = (TextAsset)Resources.Load("map_meta") as TextAsset;
         print(txtFile);
         string[] textArray = txtFile.text.Trim().Split('\t');
