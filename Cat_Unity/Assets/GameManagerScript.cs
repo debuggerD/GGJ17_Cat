@@ -35,13 +35,7 @@ public class GameManagerScript : MonoBehaviour {
 
     void GetMetaData()
     {
-        //string text = System.IO.File.ReadAllText(@"C:\Users\Public\TestFolder\WriteText.txt");
-        //string[] lines = System.IO.File.ReadAllLines(@"C:\Users\Public\TestFolder\WriteLines2.txt");
-        //foreach (string line in lines)
-        //{
-        //    Console.WriteLine("\t" + line);
-        //}
-
+        int[,] result = new int[width, length];
         TextAsset txtFile = (TextAsset)Resources.Load("map_meta") as TextAsset;
         print(txtFile);
         string[] textArray = txtFile.text.Trim().Split('\t');

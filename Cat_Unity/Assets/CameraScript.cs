@@ -8,6 +8,7 @@ public class CameraScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         cat = GameObject.Find("Cat");
+        transform.rotation = Quaternion.Euler(new Vector3(26.57f, -45f, 0f));
 	}
 	
 	// Update is called once per frame

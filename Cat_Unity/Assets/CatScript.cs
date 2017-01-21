@@ -33,6 +33,7 @@ public class CatScript : MonoBehaviour {
 	GameObject[] quantized_pieces;
 
     float speed = 2.0f;
+    GameObject cam;
 
 	int [,] FileToArray(string filename) {
 		int[,] result = null;
@@ -58,9 +59,13 @@ public class CatScript : MonoBehaviour {
 	void Start () {
         rigid = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
+        cam = GameObject.FindWithTag("MainCamera");
 
         // Initialize Logical Position
-        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.0f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
+        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.5f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
+        Vector3 relativePos = cam.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(relativePos);
+        transform.rotation = rotation;
         m_lastGridPosI = m_kCatLogicalStartI;
         m_lastGridPosJ = m_kCatLogicalStartJ;
 
@@ -77,7 +82,8 @@ public class CatScript : MonoBehaviour {
 		for(int i = 0; i < disintegration.GetLength(0); i++) {
 			var go = Instantiate(CatPiece);
 			quantized_pieces[i] = go;
-			go.transform.eulerAngles = new Vector3 (30f, 45f, 0.0f);
+            go.transform.rotation = Quaternion.LookRotation(cam.transform.position - transform.position);
+			//go.transform.eulerAngles = new Vector3 (30f, 45f, 0.0f);
 			go.GetComponent<SpriteRenderer>().color = new Color(
 				disintegration[i,2]/255f,
 				disintegration[i,3]/255f,
@@ -85,8 +91,8 @@ public class CatScript : MonoBehaviour {
 				disintegration[i,5]/255f
 			);
 			var p = this.transform.position;
-			const float scale = 70f;
-			p.x += (disintegration [i, 0]-57f+30f) / scale;
+			const float scale = 130f;
+			p.x -= (disintegration [i, 0]-57f+30f) / scale;
 			p.z -= (disintegration [i, 0]-57f+30f) / scale;
 			p.y -= (disintegration [i, 1]-68.5f+40f) / scale*1.414f;
 			go.transform.position = p;
@@ -106,6 +112,9 @@ public class CatScript : MonoBehaviour {
 	}
 
     void Update() {
+        Vector3 relativePos = cam.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(relativePos);
+        transform.rotation = rotation;
 
         // Move by WASD
         Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
@@ -137,6 +146,7 @@ public class CatScript : MonoBehaviour {
             m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
             m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
         }
+
 		if (Input.GetKeyDown ("q")) {
 			GetComponent<SpriteRenderer> ().enabled = !GetComponent<SpriteRenderer> ().enabled;
 			quantized = !GetComponent<SpriteRenderer> ().enabled;
@@ -177,10 +187,10 @@ public class CatScript : MonoBehaviour {
 					//did_move += 1
 				}
 				var p = this.transform.position;
-				const float scale = 70f;
+				const float scale = 130f;
 				disintegrated_positions [i, 0] = x;
 				disintegrated_positions [i, 1] = y;
-				p.x += (x-57f+30f) / scale;
+				p.x -= (x-57f+30f) / scale;
 				p.z -= (x-57f+30f) / scale;
 				p.y -= (y-68.5f+40f) / scale*1.414f;
 				var go = quantized_pieces [i];
@@ -204,8 +214,11 @@ public class CatScript : MonoBehaviour {
         }
     }
 
+    protected Vector3 default_rotation = new Vector3(26.57f, -45, 0);
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const int m_kCatLogicalStartI = 2;
     protected const int m_kCatLogicalStartJ = 19;
+
+   
 }
