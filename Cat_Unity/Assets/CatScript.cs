@@ -8,6 +8,20 @@ public class CatScript : MonoBehaviour {
     Rigidbody rigid;
     CharacterController controller;
 	public GameObject CatPiece;
+	public AudioSource QuantumSoundEffect;
+
+	IEnumerator fadeOut()
+	{
+		float t = QuantumSoundEffect.volume;
+		while (t > 0.0f) {
+			t -= Time.deltaTime;
+			QuantumSoundEffect.volume = t;
+			yield return new WaitForSeconds(0);
+		}
+		QuantumSoundEffect.volume = 0.0f;
+		QuantumSoundEffect.Stop ();
+	}
+
 
     protected float m_lastGridPosI;
     public float GridPosI
@@ -104,6 +118,10 @@ public class CatScript : MonoBehaviour {
 		}
 		qvis.GetComponent<QScript> ().active = true;
 		qvis.transform.position = transform.position;
+
+		QuantumSoundEffect.volume = 1f;
+		QuantumSoundEffect.Play();
+
 	}
 
 	void StopQuantization()
@@ -127,6 +145,12 @@ public class CatScript : MonoBehaviour {
 		transform.position = p;
 
 		qvis.GetComponent<QScript> ().Clear ();
+
+
+
+		StartCoroutine(fadeOut());
+
+
 	}
 
     void Update() {
