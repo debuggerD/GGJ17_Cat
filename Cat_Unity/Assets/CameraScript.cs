@@ -12,6 +12,11 @@ public class CameraScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = cat.transform.position + new Vector3(-5f, 4f, -5f);
+        transform.position = cat.transform.position + new Vector3(m_kCameraDistanceFactor, m_kCameraDistanceFactor * m_kCameraHeightFactor, -m_kCameraDistanceFactor);
 	}
+
+
+    //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
+    protected const float m_kCameraDistanceFactor = 5.0f;
+    protected const float m_kCameraHeightFactor = 0.8f;
 }
