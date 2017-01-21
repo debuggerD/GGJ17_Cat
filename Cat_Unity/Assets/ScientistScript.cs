@@ -37,8 +37,8 @@ public class ScientistScript : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         patrolPoints = new List<patrolBehavior>();
-        patrolPoints.Add(new patrolBehavior(new Vector2(22f, 6.0f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(13f, 6.0f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(46.5f, 6.0f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(37f, 6.0f), 1.0f));
 
         GameObject sight = Instantiate(sightPrefab);
         sight.GetComponent<VisionScript>().scientist = gameObject;

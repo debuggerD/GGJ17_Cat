@@ -21,7 +21,7 @@ public class GameManagerScript : MonoBehaviour {
     int width = 0;
     int length = 0;
 
-    int[,] map_move;
+    public int[,] map_move;
     int[,] map_height;
     public int[,] map_wave_pass;
     public int[,] map_wave_modify;

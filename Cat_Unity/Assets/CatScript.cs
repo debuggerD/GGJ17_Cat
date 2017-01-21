@@ -166,38 +166,41 @@ public class CatScript : MonoBehaviour {
 
     void Update() {
         transform.GetChild(0).rotation = cam.transform.rotation;
-        
-        // Move by WASD
-        Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
-        if (Input.GetKey("w"))
-        {
-            moveDir.x -= 1.0f;
-            moveDir.z += 1.0f;
-        }
-        if (Input.GetKey("a"))
-        {
-            moveDir.x -= 1.0f;
-            moveDir.z -= 1.0f;
-        }
-        if (Input.GetKey("s"))
-        {
-            moveDir.x += 1.0f;
-            moveDir.z -= 1.0f;
-        }
-        if (Input.GetKey("d"))
-        {
-            moveDir.x += 1.0f;
-            moveDir.z += 1.0f;
-        }
-        if (moveDir.sqrMagnitude > float.Epsilon)
-        {
-            moveDir.Normalize();
-            controller.Move(moveDir * Time.deltaTime * speed);
-            
-            m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
-            m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
 
-            GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, true);
+        // Move by WASD
+        if (!quantized)
+        {
+            Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
+            if (Input.GetKey("w"))
+            {
+                moveDir.x -= 1.0f;
+                moveDir.z += 1.0f;
+            }
+            if (Input.GetKey("a"))
+            {
+                moveDir.x -= 1.0f;
+                moveDir.z -= 1.0f;
+            }
+            if (Input.GetKey("s"))
+            {
+                moveDir.x += 1.0f;
+                moveDir.z -= 1.0f;
+            }
+            if (Input.GetKey("d"))
+            {
+                moveDir.x += 1.0f;
+                moveDir.z += 1.0f;
+            }
+            if (moveDir.sqrMagnitude > float.Epsilon)
+            {
+                moveDir.Normalize();
+                controller.Move(moveDir * Time.deltaTime * speed);
+
+                m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
+                m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
+
+                GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, true);
+            }
         }
         else if (isFirstFrame)
         {
@@ -234,10 +237,10 @@ public class CatScript : MonoBehaviour {
 				}
 			}
 		}
-        if (Input.GetKeyDown("space"))
-        {
-            controller.Move(new Vector3(Random.Range(-2.0f, 2.0f), 0, Random.Range(-2.0f, 2.0f)));
-        }
+        //if (Input.GetKeyDown("space"))
+        //{
+        //    controller.Move(new Vector3(Random.Range(-2.0f, 2.0f), 0, Random.Range(-2.0f, 2.0f)));
+        //}
 		if (quantized) {
 			for (var i = 0; i < disintegration.GetLength (0); i++) {
 				var x = disintegrated_positions [i, 0];
@@ -282,14 +285,17 @@ public class CatScript : MonoBehaviour {
 
     }
 
-
+    void OnTriggerEnter(Collider collider)
+    {
+        print("Trigger!!!");
+        if (collider.gameObject.name == "Scientist")
+        {
+            print("scientist!!!!!!!!!!!!");
+        }
+    }
     void OnCollisionEnter(Collision collision)
     {
         print("collision!!");
-        if (collision.gameObject.tag == "Wall")
-        {
-            rigid.velocity = Vector3.zero;
-        }
     }
 
     protected Vector3 default_rotation = new Vector3(26.57f, -45, 0);

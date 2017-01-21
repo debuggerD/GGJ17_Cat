@@ -44,7 +44,7 @@ public class VisionScript : MonoBehaviour {
 				new Vector3 (Mathf.Cos ((i -delta- 30) / 180f * 3.141592f), 0.01f, Mathf.Sin ((i -delta- 30) / 180f * 3.141592f)));
 			RaycastHit hit;
 			float len = SightLength;
-			if (Physics.Raycast (ray, out hit, SightLength, ~(1<<8))) {
+			if (Physics.Raycast (ray, out hit, SightLength, ~((1<<8) | (1<<10)))) {
 				len = hit.distance;
 			}
 			for(var j = 1; j <= 40;j++)
