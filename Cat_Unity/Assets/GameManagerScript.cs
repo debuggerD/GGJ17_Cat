@@ -10,9 +10,15 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject Wall;
     int width = 0;
     int length = 0;
-    int[,] tiles;
-	// Use this for initialization
-	void Start () {
+
+    int[,] map_move;
+    int[,] map_height;
+    int[,] map_wave_pass;
+    int[,] map_wave_modify;
+    int[,] map_wall;
+
+    // Use this for initialization
+    void Start () {
         GetMetaData();
         ReadMapData();
 	}
@@ -59,7 +65,11 @@ public class GameManagerScript : MonoBehaviour {
 
     void ReadMapData()
     {
-        tiles = FileToArray("map_wall_m");
+        map_move = FileToArray("map_move_m");
+        map_height = FileToArray("map_height_m");
+        map_wave_pass = FileToArray("map_wave_pass_m");
+        map_wave_modify = FileToArray("map_wave_modify_m");
+        map_wall = FileToArray("map_wall_m");
         CreateMap();
     }
 
@@ -71,25 +81,23 @@ public class GameManagerScript : MonoBehaviour {
         {
             for (int j = 0; j < length; j++)
             {
-                
-                switch (tiles[i,j])
+                switch (map_wall[i,j])
                 {
                     case 0:
                         newObject = Instantiate(Wall);
-                        newObject.transform.position = new Vector3(i * 1, 0, j * 1) * unitLength;
+                        newObject.transform.position = new Vector3(j * 1, 2, i * 1) * unitLength;
                         break;
                     case 1:
                         newObject = Instantiate(Tile);
-                        newObject.transform.position = new Vector3(i * 1, 0, j * 1) * unitLength;
+                        newObject.transform.position = new Vector3(j * 1, 0, i * 1) * unitLength;
                         break;
-                    case 128:
-                        newObject = Instantiate(Tile);
-                        newObject.transform.position = new Vector3(i * 1, 0, j * 1) * unitLength;
+                    case 2:
+                        newObject = Instantiate(Wall);
+                        newObject.transform.position = new Vector3(j * 1, 2, i * 1) * unitLength;
                         break;
                     default:
                         break;
                 }
-                
             }
         }
     }
