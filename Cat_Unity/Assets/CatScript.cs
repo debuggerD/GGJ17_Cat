@@ -11,27 +11,43 @@ public class CatScript : MonoBehaviour {
 	void Start () {
         rigid = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
+
+        // Initialize Logical Position
+        transform.position = new Vector3(GameManagerScript.GetXPos(m_kCatLogicalStartI, m_kCatLogicalStartJ), 0.5f, GameManagerScript.GetZPos(m_kCatLogicalStartI, m_kCatLogicalStartJ));
     }
 
     // Update is called once per frame
     Vector3 lastValidPosition;
     void Update() {
+
+        // Move by WASD
+        Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
         if (Input.GetKey("w"))
         {
-            controller.Move(new Vector3(1, 0, 0) * Time.deltaTime * speed);
+            moveDir.x -= 1.0f;
+            moveDir.z += 1.0f;
         }
         if (Input.GetKey("a"))
         {
-            controller.Move(new Vector3(0, 0, 1) * Time.deltaTime * speed);
+            moveDir.x -= 1.0f;
+            moveDir.z -= 1.0f;
         }
         if (Input.GetKey("s"))
         {
-            controller.Move(new Vector3(-1, 0, 0) * Time.deltaTime * speed);
+            moveDir.x += 1.0f;
+            moveDir.z -= 1.0f;
         }
         if (Input.GetKey("d"))
         {
-            controller.Move(new Vector3(0, 0, -1) * Time.deltaTime * speed);
+            moveDir.x += 1.0f;
+            moveDir.z += 1.0f;
         }
+        if (moveDir.sqrMagnitude > float.Epsilon)
+        {
+            moveDir.Normalize();
+            controller.Move(moveDir * Time.deltaTime * speed);
+        }
+
         if (Input.GetKeyDown("space"))
         {
             controller.Move(new Vector3(Random.Range(-2.0f, 2.0f), 0, Random.Range(-2.0f, 2.0f)));
@@ -52,4 +68,8 @@ public class CatScript : MonoBehaviour {
         }
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
+    protected const int m_kCatLogicalStartI = 2;
+    protected const int m_kCatLogicalStartJ = 19;
 }
