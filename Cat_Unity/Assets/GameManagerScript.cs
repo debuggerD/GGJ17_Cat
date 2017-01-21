@@ -11,6 +11,8 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject NewWall;
     public GameObject WallCollider;
 
+    public GameObject BlockerCollider;
+
     int width = 0;
     int length = 0;
 
@@ -21,6 +23,7 @@ public class GameManagerScript : MonoBehaviour {
     int[,] map_wall;
 
     protected GameObject[,] m_wallObjects;
+    protected GameObject[,] m_moveBlockerObjects;
 
     // Use this for initialization
     void Start () {
@@ -71,7 +74,8 @@ public class GameManagerScript : MonoBehaviour {
     void CreateMap()
     {
         _CreatTileObjects();
-        _CreateWallObjects();        
+        _CreateWallObjects();
+        _CreateMoveBlockers();
     }
 
 
@@ -95,6 +99,15 @@ public class GameManagerScript : MonoBehaviour {
     public static float GetGridJPos(float x, float z)
     {
         return x / m_kUnitLength;
+    }
+
+    public void NotifyCatMove(float gridI, float gridJ, bool isNormalMove)
+    {
+        int movableRegion = GetMovableRegion(gridI, gridJ);
+        if (movableRegion != m_currentMoveRegion)
+        {
+            _NotifyMoveRegionChange(movableRegion);
+        }
     }
 
     #endregion
@@ -163,16 +176,164 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    #endregion
-
     protected void ApplyNormalWallTransform(GameObject wallObj, int i, int j)
     {
         wallObj.transform.position = new Vector3(GetXPos(i, j + 1), 0, GetZPos(i, j + 1));
     }
 
+    #endregion
+
+
+    #region Movable
+
+    protected int m_currentMoveRegion;
+
+    protected void _CreateMoveBlockers()
+    {
+        m_currentMoveRegion = -1;
+
+        m_moveBlockerObjects = new GameObject[width, length];
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < length; j++)
+            {
+                if (map_move[i, j] == 0)
+                {
+                    if (map_wall[i, j] == 0 || map_wall[i, j] == 2)
+                    {
+                        continue;
+                    }
+                }
+
+                GameObject createdCollider = Instantiate(BlockerCollider);
+                createdCollider.transform.position = new Vector3(GetXPos(i, j), 0, GetZPos(i, j));
+                createdCollider.transform.localScale = new Vector3(m_kUnitLength, m_kBlockerHeight, m_kUnitLength);
+                m_moveBlockerObjects[i, j] = createdCollider;
+                createdCollider.SetActive(map_move[i, j] == 0);
+            }
+        }
+    }
+
+    public int GetMovableRegion(float gridI, float gridJ)
+    {
+        if (gridI < 0.0f || gridI >= width || gridJ < 0.0f || gridJ >= length)
+        {
+            return - 1;
+        }
+        return map_move[(int)Math.Floor(gridI), (int)Math.Floor(gridJ)];
+    }
+
+    protected void _NotifyMoveRegionChange(int newRegion)
+    {
+        if (newRegion == m_currentMoveRegion)
+        {
+            return;
+        }
+
+        if (m_currentMoveRegion > 0)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < length; j++)
+                {
+                    GameObject currentBlocker = m_moveBlockerObjects[i, j];
+                    if (currentBlocker == null)
+                    {
+                        continue;
+                    }
+
+                    if (map_move[i, j] >= 1)
+                    {
+                        currentBlocker.SetActive(false);
+                    }
+                }
+            }
+        }
+
+        m_currentMoveRegion = newRegion;
+        if (newRegion > 0)
+        {
+            if (newRegion == 1)
+            {
+                // One Tile
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < length; j++)
+                    {
+                        if (map_move[i, j] > 1)
+                        {
+                            GameObject currentBlocker = m_moveBlockerObjects[i, j];
+                            if (currentBlocker == null)
+                            {
+                                continue;
+                            }
+                            currentBlocker.SetActive(true);
+                        }
+                    }
+                }
+            }
+            else if (newRegion >= 128)
+            {
+                if (newRegion % 2 == 0)
+                {
+                    // Only To
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < length; j++)
+                        {
+                            if (map_move[i, j] != newRegion && map_move[i, j] > 0)
+                            {
+                                GameObject currentBlocker = m_moveBlockerObjects[i, j];
+                                if (currentBlocker == null)
+                                {
+                                    continue;
+                                }
+                                currentBlocker.SetActive(true);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    bool isBlockOne = (newRegion % 4 == 1);
+
+                    // Move Down
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < length; j++)
+                        {
+                            GameObject currentBlocker = m_moveBlockerObjects[i, j];
+                            if (currentBlocker == null)
+                            {
+                                continue;
+                            }
+                            if (map_move[i, j] == 0)
+                            {
+                                continue;
+                            }
+
+                            if (map_move[i, j] == 1)
+                            {
+                                currentBlocker.SetActive(isBlockOne);
+                            }
+                            else if (map_move[i, j] > newRegion)
+                            {
+                                currentBlocker.SetActive(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #endregion
+
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const float m_kUnitLength = 0.5f;
     protected const float m_kWallHeight = 1.5f;
+
+    protected const float m_kBlockerHeight = 10.0f;
 
     public const float kIsometricVerticalAngle = 30.0f;
 }
