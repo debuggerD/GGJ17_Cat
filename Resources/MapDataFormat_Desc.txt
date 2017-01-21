@@ -1,16 +1,16 @@
 맵 데이터 포맷 Description (게임 데이터 파일 아님)
 
  - 모든 맵 데이터는 tab separated csv format
- - .map 형식의 파일에는 각 셀 마다 아래에 정의한 하나의 value가 들어간다.
+ - *_m.csv 형식의 파일에는 각 셀 마다 아래에 정의한 하나의 value가 들어간다.
    ! Cell은 행이 y 좌표, 열(tab separated)이 x 좌표를 내는 위치에 존재하는 것으로 가정
    ! 타일을 가로/세로 각각 2분한 세부 타일이 하나의 cell로 존재한다.
 
 
-map_meta.dat (맵 전체에 대한 메타데이터)
+map_meta.csv (맵 전체에 대한 메타데이터)
 w	h
 
 
-map_move.map (Move Region)
+map_move_m.csv (Move Region)
 이동 가능한 region 정의
  - 0 : 이동 불가(벽, 열리지 않는 문 등)
  - 1 : 이동 가능(일반적인 바닥)
@@ -21,14 +21,14 @@ map_move.map (Move Region)
 	 > mod 4 = 3: 자기보다 작은 숫자의 타일로만 이동 가능 / 1 타일로 이동 가능
 
 
-map_height.map (Height)
+map_height_m.csv (Height)
 높이 정의
  - 0 : 바닥
  - 1 : 바닥보다 1 cell 길이 만큼 높은 곳
  - 2~ : 바닥보다 n cell 길이 만큼 높은 곳
 
 
-map_wave_pass.map (Wave Pass Map)
+map_wave_pass_m.csv (Wave Pass Map)
  - 0 : 고양이 파동이 지나갈 수 없는 곳
  - 1 : 고양이 파동이 지나갈 수 있는 곳
  - 128~
@@ -38,13 +38,13 @@ map_wave_pass.map (Wave Pass Map)
 	 > mod 4 = 3: 자기보다 작은 숫자의 타일로만 파동 전파 가능 / 1 타일로 파동 전파 가능
 
 
-map_wave_modify.map (Wave Modifier Map)
+map_wave_modify_m.csv (Wave Modifier Map)
  - 0 : No Modifier
  - 1 : Attract
  - 2 : Disperse
 
 
-map_wall.map (Wall Map)
+map_wall_m.csv (Wall Map)
  - 0 : Wall
  - 1 : No Wall
  - 2~ : 특수한 벽
@@ -52,5 +52,5 @@ map_wall.map (Wall Map)
  
  
  
-map_objects.dat (Normal Objects)
+map_objects.csv (Normal Objects)
 id	x	y	w	h	logic	resource	flip
