@@ -7,13 +7,27 @@ public class QScript : MonoBehaviour {
 
 	public Vector3[] vertices;
 	public int[] triangles;
+	public bool active = false;
+
+	GameObject manager;
 
 	// Use this for initialization
 	void Start () {
-		energy = new Dictionary<KeyValuePair<int,int>,int>();
-		energy[new KeyValuePair<int,int>(0,0)] = 10000;
 		Mesh mesh = new Mesh();
 		GetComponent<MeshFilter> ().mesh = mesh;
+		Clear ();
+
+		manager = GameObject.Find ("GameManager");
+	}
+	const float height = 0.001f;
+	public void Clear()
+	{
+		energy = new Dictionary<KeyValuePair<int,int>,int>();
+		energy[new KeyValuePair<int,int>(0,0)] = 10000;
+		active = false;
+
+		GetComponent<MeshFilter> ().mesh.vertices = vertices = new Vector3[]{};
+		GetComponent<MeshFilter> ().mesh.triangles = triangles = new int[]{};
 	}
 
 	int[][] directions = new int[][] {new int[]{-1,0,100},new int[]{1,0,100},new int[]{0,1,100}, new int[]{0,-1,100}
@@ -29,15 +43,49 @@ public class QScript : MonoBehaviour {
 		return 1 + (int)Mathf.Sqrt (d-1)/10;
 	}
 	// Update is called once per frame
+	int sub_tx;
+	int sub_ty;
+	public Vector2 PickPosition()
+	{
+		int pick = Random.Range (0, 10000);
+		foreach(var kv in energy) {
+			pick -= kv.Value;
+			if (pick < 0){
+				return new Vector2((kv.Key.Key+sub_tx)/4f+0.25f, (kv.Key.Value+sub_ty)/4f+0.25f);
+			}
+		}
+		return Vector2.zero;
+	}
+
 	void Update () {
-		Dictionary<KeyValuePair<int,int>, int> next = new Dictionary<KeyValuePair<int,int>,int>();
+		if (!active)
+			return;
+		int[,] pass = manager.GetComponent<GameManagerScript> ().map_wave_pass;
+		//int[,] mod  = manager.GetComponent<GameManagerScript> ().map_wave_modify;
 		const float scale = 1.0f/4;
+		const int sub_tile_count = 2;
+		//int tx = Mathf.Floor(this.transform.z / 0.5f);
+		//int ty = Mathf.Floor(this.transform.x / 0.5f);
+		sub_tx = (int)Mathf.Floor(this.transform.position.x / scale);
+		sub_ty = (int)Mathf.Floor(this.transform.position.z / scale);
+
+		System.Func<int, int, bool> Passable = (int x, int y) => {
+			var tx = (sub_tx + x) / sub_tile_count;
+			var ty = (sub_ty + y) / sub_tile_count;
+			if (tx < 0 || ty < 0 || tx >= pass.GetLength(1) || ty >= pass.GetLength(0))
+				return false;
+			return pass[ty,tx] > 0;
+		};
+
+		Dictionary<KeyValuePair<int,int>, int> next = new Dictionary<KeyValuePair<int,int>,int>();
 		foreach (var kv in energy) {
 			var k = kv.Key;
 			var v = kv.Value;
 			var delta = 0;
 			foreach (var dir in directions) {
 				KeyValuePair<int,int> nk = new KeyValuePair<int,int>(k.Key + dir[0], k.Value + dir[1]);
+				if (!Passable (nk.Key, nk.Value))
+					continue;
 				int nv = 0;
 				bool has = false;
 				if (energy.ContainsKey (nk)) {
@@ -86,10 +134,10 @@ public class QScript : MonoBehaviour {
 					y++;
 				if (y > maxy)
 					break;
-				int by = y;
+				//int by = y;
 				while (y <= maxy && energy.ContainsKey (new KeyValuePair<int,int>(x, y)))
 					y++;
-				int ey = y;
+				//int ey = y;
 				idx ++;
 			}
 		}

@@ -7,15 +7,20 @@ using System;
 public class GameManagerScript : MonoBehaviour {
 
     public GameObject Tile;
-    public GameObject Wall;
+
+    public GameObject NewWall;
+    public GameObject WallCollider;
+
     int width = 0;
     int length = 0;
 
     int[,] map_move;
     int[,] map_height;
-    int[,] map_wave_pass;
-    int[,] map_wave_modify;
+    public int[,] map_wave_pass;
+    public int[,] map_wave_modify;
     int[,] map_wall;
+
+    protected GameObject[,] m_wallObjects;
 
     // Use this for initialization
     void Start () {
@@ -65,43 +70,12 @@ public class GameManagerScript : MonoBehaviour {
 
     void CreateMap()
     {
-        // Tiling
-        const float halfTileLength = 0.5f;
-        for (int i = 0; i < width; i += 2)
-        {
-            for (int j = 0; j < length; j += 2)
-            {
-                GameObject createdTile = Instantiate(Tile);
-                createdTile.transform.position = new Vector3(GetXPos(i, j) + halfTileLength, 0, GetZPos(i, j) + halfTileLength);
-            }
-        }
-
-        // Make Walls
-        const float halfWallLength = m_kUnitLength * 0.5f;
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < length; j++)
-            {
-                GameObject createdWallPatch = null;
-                switch (map_wall[i,j])
-                {
-                    case 0:
-                        createdWallPatch = Instantiate(Wall);
-                        createdWallPatch.transform.position = new Vector3(GetXPos(i, j) + halfWallLength, 0, GetZPos(i, j) + halfWallLength);
-                        break;
-
-                    case 2:
-                        createdWallPatch = Instantiate(Wall);
-                        createdWallPatch.transform.position = new Vector3(GetXPos(i, j) + halfWallLength, 0, GetZPos(i, j) + halfWallLength);
-                        break;
-                }
-                if (createdWallPatch != null)
-                {
-                    ApplyNormalWallTransform(createdWallPatch);
-                }
-            }
-        }
+        _CreatTileObjects();
+        _CreateWallObjects();        
     }
+
+
+    #region Common Logic Interface
 
     public static float GetXPos(float gridI, float gridJ)
     {
@@ -113,13 +87,92 @@ public class GameManagerScript : MonoBehaviour {
         return gridI * m_kUnitLength;
     }
 
-    protected void ApplyNormalWallTransform(GameObject wallObj)
+    public static float GetGridIPos(float x, float z)
     {
-        wallObj.transform.localScale = new Vector3(wallObj.transform.localScale.x, m_kWallHeight, wallObj.transform.localScale.z);
-        wallObj.transform.position = new Vector3(wallObj.transform.position.x, m_kWallHeight * 0.5f, wallObj.transform.position.z);
+        return z / m_kUnitLength;
+    }
+
+    public static float GetGridJPos(float x, float z)
+    {
+        return x / m_kUnitLength;
+    }
+
+    #endregion
+
+
+    #region Common Logic
+
+    #endregion
+
+
+    #region Tile
+
+    protected void _CreatTileObjects()
+    {
+        const float halfTileLength = 0.5f;
+        for (int i = 0; i < width; i += 2)
+        {
+            for (int j = 0; j < length; j += 2)
+            {
+                GameObject createdTile = Instantiate(Tile);
+                createdTile.transform.position = new Vector3(GetXPos(i, j) + halfTileLength, 0, GetZPos(i, j) + halfTileLength);
+            }
+        }
+    }
+
+    #endregion
+
+
+    #region Wall
+
+    protected void _CreateWallObjects()
+    {
+        m_wallObjects = new GameObject[width, length];
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < length; j++)
+            {
+                GameObject createdWallPatch = null;
+                switch (map_wall[i, j])
+                {
+                    case 0:
+                        createdWallPatch = Instantiate(NewWall);
+                        break;
+
+                    case 2:
+                        createdWallPatch = Instantiate(NewWall);
+                        break;
+                }
+                if (createdWallPatch != null)
+                {
+                    ApplyNormalWallTransform(createdWallPatch, i, j);
+
+                    WallUpdater wallDrawUpdater = createdWallPatch.GetComponent<WallUpdater>();
+                    if (wallDrawUpdater != null)
+                    {
+                        wallDrawUpdater.gridI = i;
+                        wallDrawUpdater.gridJ = j;
+                    }
+
+                    GameObject createdCollider = Instantiate(WallCollider);
+                    createdCollider.transform.position = new Vector3(GetXPos(i, j), 0, GetZPos(i, j));
+                    createdCollider.transform.localScale = new Vector3(m_kUnitLength, m_kWallHeight, m_kUnitLength);
+                }
+                m_wallObjects[i, j] = createdWallPatch;
+            }
+        }
+    }
+
+    #endregion
+
+    protected void ApplyNormalWallTransform(GameObject wallObj, int i, int j)
+    {
+        wallObj.transform.position = new Vector3(GetXPos(i, j + 1), 0, GetZPos(i, j + 1));
     }
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const float m_kUnitLength = 0.5f;
     protected const float m_kWallHeight = 1.5f;
+
+    public const float kIsometricVerticalAngle = 30.0f;
 }
