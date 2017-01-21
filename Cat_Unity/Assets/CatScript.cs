@@ -296,7 +296,7 @@ public class CatScript : MonoBehaviour {
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const int m_kCatLogicalStartI = 3;
-    protected const int m_kCatLogicalStartJ = 44;
+    protected const int m_kCatLogicalStartJ = 92;
 
    
 }
