@@ -7,7 +7,7 @@ using System;
 public class GameManagerScript : MonoBehaviour {
 
     public GameObject Tile;
-    public GameObject Wall;
+    public GameObject NewWall;
     int width = 0;
     int length = 0;
 
@@ -74,42 +74,8 @@ public class GameManagerScript : MonoBehaviour {
 
     void CreateMap()
     {
-        // Tiling
-        const float halfTileLength = 0.5f;
-        for (int i = 0; i < width; i += 2)
-        {
-            for (int j = 0; j < length; j += 2)
-            {
-                GameObject createdTile = Instantiate(Tile);
-                createdTile.transform.position = new Vector3(GetXPos(i, j) + halfTileLength, 0, GetZPos(i, j) + halfTileLength);
-            }
-        }
-
-        // Make Walls
-        const float halfWallLength = m_kUnitLength * 0.5f;
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < length; j++)
-            {
-                GameObject createdWallPatch = null;
-                switch (map_wall[i,j])
-                {
-                    case 0:
-                        createdWallPatch = Instantiate(Wall);
-                        createdWallPatch.transform.position = new Vector3(GetXPos(i, j) + halfWallLength, 0, GetZPos(i, j) + halfWallLength);
-                        break;
-
-                    case 2:
-                        createdWallPatch = Instantiate(Wall);
-                        createdWallPatch.transform.position = new Vector3(GetXPos(i, j) + halfWallLength, 0, GetZPos(i, j) + halfWallLength);
-                        break;
-                }
-                if (createdWallPatch != null)
-                {
-                    ApplyNormalWallTransform(createdWallPatch);
-                }
-            }
-        }
+        _CreatTileObjects();
+        _CreateWallObjects();        
     }
 
 
@@ -130,14 +96,22 @@ public class GameManagerScript : MonoBehaviour {
 
     #region Common Logic
 
-    public static float GetXPos(float gridI, float gridJ)
-    {
-        return gridJ * m_kUnitLength;
-    }
+    #endregion
 
-    public static float GetZPos(float gridI, float gridJ)
+
+    #region Tile
+
+    protected void _CreatTileObjects()
     {
-        return gridI * m_kUnitLength;
+        const float halfTileLength = 0.5f;
+        for (int i = 0; i < width; i += 2)
+        {
+            for (int j = 0; j < length; j += 2)
+            {
+                GameObject createdTile = Instantiate(Tile);
+                createdTile.transform.position = new Vector3(GetXPos(i, j) + halfTileLength, 0, GetZPos(i, j) + halfTileLength);
+            }
+        }
     }
 
     #endregion
@@ -145,15 +119,42 @@ public class GameManagerScript : MonoBehaviour {
 
     #region Wall
 
+    protected void _CreateWallObjects()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < length; j++)
+            {
+                GameObject createdWallPatch = null;
+                switch (map_wall[i, j])
+                {
+                    case 0:
+                        createdWallPatch = Instantiate(NewWall);
+                        break;
+
+                    case 2:
+                        createdWallPatch = Instantiate(NewWall);
+                        break;
+                }
+                if (createdWallPatch != null)
+                {
+                    ApplyNormalWallTransform(createdWallPatch, i, j);
+                }
+            }
+        }
+    }
+
     #endregion
 
-    protected void ApplyNormalWallTransform(GameObject wallObj)
+    protected void ApplyNormalWallTransform(GameObject wallObj, int i, int j)
     {
-        wallObj.transform.localScale = new Vector3(wallObj.transform.localScale.x, m_kWallHeight, wallObj.transform.localScale.z);
-        wallObj.transform.position = new Vector3(wallObj.transform.position.x, m_kWallHeight * 0.5f, wallObj.transform.position.z);
+        const float halfWallLength = m_kUnitLength * 0.5f;
+        wallObj.transform.position = new Vector3(GetXPos(i, j + 1), 0, GetZPos(i, j + 1));
     }
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const float m_kUnitLength = 0.5f;
     protected const float m_kWallHeight = 1.5f;
+
+    public const float kIsometricVerticalAngle = 30.0f;
 }
