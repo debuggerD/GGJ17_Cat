@@ -21,7 +21,7 @@ public class GameManagerScript : MonoBehaviour {
     int width = 0;
     int length = 0;
 
-    int[,] map_move;
+    public int[,] map_move;
     int[,] map_height;
     public int[,] map_wave_pass;
     public int[,] map_wave_modify;
@@ -38,7 +38,75 @@ public class GameManagerScript : MonoBehaviour {
         ReadMapData();
 
         _InitializeGameObjectData();
+
+		LoadAchievements ();
+
+		warp_count = 0;
     }
+	public int warp_count = 0;
+	int[] achievements = new int[]{0,0,0,0,0};
+	float achievement_start_time = Time.time - 100;
+	int achievement_index;
+	public enum Achivements {
+		LuckyCat,
+		CatHavingABadDay,
+		HeisenburgUncatiantyPrinciple,
+		TimeTravel,
+		RoadToFreedom,
+	};
+
+	public void GetAchivement(Achivements a)
+	{
+		if (achievements [(int)a] != 0)
+			return;
+		achievement_start_time = Time.time;
+		achievement_index = (int)a;
+		achievements[(int)a] = 1;
+	}
+
+	void OnGUI()
+	{
+		var msgs = new string[] {
+			"Lucky Cat\nYou exit the first room with just one try!",
+			"Cat Having a Bad Day\nYou are unlucky...",
+			"Heisenburg Un`cat'ianty Principle\nYou are observed therefore you exist.",
+			"Time Travel\nFrom the beginning, again.",
+			"Road to Freedom\nYou finished the game.",
+		};
+		var dt = Time.time - achievement_start_time;
+		if (dt < 5f) {
+			print (dt + " " + Time.time + " " + achievement_start_time);
+			if (dt < 1f) {
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
+			} else if (dt < 4f) {
+				dt = (dt - 1f) / 3f;
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10), msgs[achievement_index]);
+			} else {
+				dt = (5f-dt);
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
+			}
+		}
+	}
+
+	void SaveAchievements()
+	{
+		return;
+		var fs = System.IO.File.Create (Application.persistentDataPath + "/achieve.dat");
+		var tw = new System.IO.StreamWriter (fs);
+		tw.WriteLine(string.Join (" ", achievements.Select (p => p + "").ToArray()));
+	}
+
+	void LoadAchievements()
+	{
+		if (System.IO.File.Exists (Application.persistentDataPath + "/achieve.dat")) {
+			var fs = System.IO.File.Open (Application.persistentDataPath + "/achieve.dat", System.IO.FileMode.Open);
+			var tr = new System.IO.StreamReader (fs);
+			var line = tr.ReadLine ();
+			var tokens = line.Trim ().Split (' ');
+			var nums = tokens.Select (p => int.Parse (p));
+
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -130,6 +198,11 @@ public class GameManagerScript : MonoBehaviour {
         {
             _NotifyWallHideRegionChange(wallHideRegion);
         }
+		if (warp_count >= 7 && wallHideRegion < 2 && achievements[(int)Achivements.CatHavingABadDay] == 0) {
+			achievement_start_time = Time.time;
+			achievement_index = (int)Achivements.CatHavingABadDay;
+			achievements[(int)Achivements.CatHavingABadDay] = 1;
+		}
     }
 
     #endregion
@@ -274,6 +347,13 @@ public class GameManagerScript : MonoBehaviour {
         {
             return;
         }
+
+		if (newRegion==2 && warp_count == 2 && achievements[(int)Achivements.LuckyCat] == 0)
+		{
+			achievement_start_time = Time.time;
+			achievement_index = (int)Achivements.LuckyCat;
+			achievements[(int)Achivements.LuckyCat] = 1;
+		}
 
         bool[,] isHideTable = null;
         if (m_mapWallHidingTable.ContainsKey(newRegion))
