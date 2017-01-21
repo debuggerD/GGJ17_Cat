@@ -31,8 +31,8 @@ public class ScientistScript : MonoBehaviour {
         cam = GameObject.FindWithTag("MainCamera");
         controller = GetComponent<CharacterController>();
         patrolPoints = new List<patrolBehavior>();
-        patrolPoints.Add(new patrolBehavior(new Vector2(1.0f, 1.0f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(3.0f, 3.0f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(1.5f, 1.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 2.5f), 1.0f));
 	}
 	
 	// Update is called once per frame
@@ -44,7 +44,7 @@ public class ScientistScript : MonoBehaviour {
         }
         else
         {
-            //Patrol();
+            Patrol();
         }
     }
 
@@ -55,7 +55,7 @@ public class ScientistScript : MonoBehaviour {
 
     void Patrol()
     {
-        if (new Vector2(transform.position.x, transform.position.z) == patrolPoints[patrolIndex].destination)
+        if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), patrolPoints[patrolIndex].destination) <= 0.2f)
         {
             if (remainTime > 0)
             {
@@ -64,16 +64,17 @@ public class ScientistScript : MonoBehaviour {
             else
             {
                 patrolIndex += 1;
-                if (patrolIndex > patrolPoints.Count)
+                if (patrolIndex >= patrolPoints.Count)
                 {
                     patrolIndex = 0;
-                    remainTime = patrolPoints[patrolIndex].stopDuration;
                 }
+                remainTime = patrolPoints[patrolIndex].stopDuration;
+
             }
         }
         else
         {
-            controller.Move((new Vector3(patrolPoints[patrolIndex].destination.x, 0, patrolPoints[patrolIndex].destination.y) - transform.position).normalized * Time.deltaTime * speed);
+            controller.Move((new Vector3(patrolPoints[patrolIndex].destination.x - transform.position.x, 0, patrolPoints[patrolIndex].destination.y - transform.position.z)).normalized * Time.deltaTime * speed);
         }
     }
 }
