@@ -37,12 +37,12 @@ public class ScientistScript : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         patrolPoints = new List<patrolBehavior>();
-        patrolPoints.Add(new patrolBehavior(new Vector2(-1.5f, -1.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(-1.5f, -3.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(-2.5f, -3.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(-2.5f, -1.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(11f, 6.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(2f, 6.5f), 1.0f));
+
         GameObject sight = Instantiate(sightPrefab);
         sight.GetComponent<VisionScript>().scientist = gameObject;
+        Physics.IgnoreLayerCollision(8, 9, true);
     }
 
     // Update is called once per frame

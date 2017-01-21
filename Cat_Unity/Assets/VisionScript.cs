@@ -34,17 +34,17 @@ public class VisionScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        transform.position = scientist.transform.position + new Vector3(0, -0.69f, 0);
+        transform.position = scientist.transform.position + new Vector3(0, -0.6f, 0);
 		var seeing = manager.GetComponent<GameManagerScript> ().seeing;
-		var rot = transform.rotation;
-		var delta = Input.mousePosition.x;
-		rot.eulerAngles = new Vector3 (0.0f, delta, 0.0f);
+		var rot = scientist.GetComponent<ScientistScript>().facingQuat;
+        var delta = scientist.GetComponent<ScientistScript>().facingQuat.eulerAngles.y;
+        rot.eulerAngles = new Vector3 (0.0f, delta, 0.0f);
 		for (var i = 0; i < 60; i++) {
 			Ray ray = new Ray (transform.position,
 				new Vector3 (Mathf.Cos ((i -delta- 30) / 180f * 3.141592f), 0.01f, Mathf.Sin ((i -delta- 30) / 180f * 3.141592f)));
 			RaycastHit hit;
 			float len = SightLength;
-			if (Physics.Raycast (ray, out hit, SightLength)) {
+			if (Physics.Raycast (ray, out hit, SightLength, ~(1<<8))) {
 				len = hit.distance;
 			}
 			for(var j = 1; j <= 40;j++)
