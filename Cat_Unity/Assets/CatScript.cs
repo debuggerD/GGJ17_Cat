@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class CatScript : MonoBehaviour {
 
-    Rigidbody rigidbody;
+    Rigidbody rigid;
     CharacterController controller;
+    float speed = 2.0f;
 	// Use this for initialization
 	void Start () {
-        rigidbody = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
     }
 
@@ -17,20 +18,23 @@ public class CatScript : MonoBehaviour {
     void Update() {
         if (Input.GetKey("w"))
         {
-            controller.Move(new Vector3(1, 0, 0) * Time.deltaTime);
+            controller.Move(new Vector3(1, 0, 0) * Time.deltaTime * speed);
         }
         if (Input.GetKey("a"))
         {
-            controller.Move(new Vector3(0, 0, 1) * Time.deltaTime);
-
+            controller.Move(new Vector3(0, 0, 1) * Time.deltaTime * speed);
         }
         if (Input.GetKey("s"))
         {
-            controller.Move(new Vector3(-1, 0, 0) * Time.deltaTime);
+            controller.Move(new Vector3(-1, 0, 0) * Time.deltaTime * speed);
         }
         if (Input.GetKey("d"))
         {
-            controller.Move(new Vector3(0, 0, -1) * Time.deltaTime);
+            controller.Move(new Vector3(0, 0, -1) * Time.deltaTime * speed);
+        }
+        if (Input.GetKeyDown("space"))
+        {
+            controller.Move(new Vector3(Random.Range(-2.0f, 2.0f), 0, Random.Range(-2.0f, 2.0f)));
         }
     }
     void FixedUpdate()
@@ -44,7 +48,7 @@ public class CatScript : MonoBehaviour {
         print("collision!!");
         if (collision.gameObject.tag == "Wall")
         {
-            rigidbody.velocity = Vector3.zero;
+            rigid.velocity = Vector3.zero;
         }
     }
 
