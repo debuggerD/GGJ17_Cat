@@ -113,6 +113,9 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
+
+    #region Common Logic Interface
+
     public static float GetXPos(float gridI, float gridJ)
     {
         return gridJ * m_kUnitLength;
@@ -122,6 +125,28 @@ public class GameManagerScript : MonoBehaviour {
     {
         return gridI * m_kUnitLength;
     }
+
+    #endregion
+
+
+    #region Common Logic
+
+    public static float GetXPos(float gridI, float gridJ)
+    {
+        return gridJ * m_kUnitLength;
+    }
+
+    public static float GetZPos(float gridI, float gridJ)
+    {
+        return gridI * m_kUnitLength;
+    }
+
+    #endregion
+
+
+    #region Wall
+
+    #endregion
 
     protected void ApplyNormalWallTransform(GameObject wallObj)
     {
