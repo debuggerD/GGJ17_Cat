@@ -26,8 +26,8 @@ public class QScript : MonoBehaviour {
 		energy[new KeyValuePair<int,int>(0,0)] = 10000;
 		active = false;
 
-		GetComponent<MeshFilter> ().mesh.vertices = vertices = new Vector3[]{};
 		GetComponent<MeshFilter> ().mesh.triangles = triangles = new int[]{};
+		GetComponent<MeshFilter> ().mesh.vertices = vertices = new Vector3[]{};
 	}
 
 	int[][] directions = new int[][] {new int[]{-1,0,100},new int[]{1,0,100},new int[]{0,1,100}, new int[]{0,-1,100}
@@ -47,11 +47,13 @@ public class QScript : MonoBehaviour {
 	int sub_ty;
 	public Vector2 PickPosition()
 	{
-		int pick = Random.Range (0, 10000);
+		//int pick = Random.Range (0, 10000);
+		int pick = Random.Range (0, energy.Count);
 		foreach(var kv in energy) {
-			pick -= kv.Value;
+			//pick -= kv.Value;
+			pick -= 1;
 			if (pick < 0){
-				return new Vector2((kv.Key.Key+sub_tx)/4f+0.25f, (kv.Key.Value+sub_ty)/4f+0.25f);
+				return new Vector2((kv.Key.Key+sub_tx)/4f, (kv.Key.Value+sub_ty)/4f);
 			}
 		}
 		return Vector2.zero;
