@@ -295,8 +295,8 @@ public class CatScript : MonoBehaviour {
     protected Vector3 default_rotation = new Vector3(26.57f, -45, 0);
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
-    protected const int m_kCatLogicalStartI = 2;
-    protected const int m_kCatLogicalStartJ = 19;
+    protected const int m_kCatLogicalStartI = 3;
+    protected const int m_kCatLogicalStartJ = 44;
 
    
 }
