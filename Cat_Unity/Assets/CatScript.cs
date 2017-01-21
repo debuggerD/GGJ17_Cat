@@ -52,7 +52,11 @@ public class CatScript : MonoBehaviour {
 		disintegration = FileToArray ("disintegration");
 		disintegrated_positions = new float[disintegration.GetLength(0), 2];
 		quantized_pieces = new GameObject[disintegration.GetLength(0)];
+
+		qvis = GameObject.Find ("QVisualizer");
     }
+
+	GameObject qvis = null;
 
     // Update is called once per frame
     Vector3 lastValidPosition;
@@ -79,6 +83,8 @@ public class CatScript : MonoBehaviour {
 			disintegrated_positions [i, 0] = (float)disintegration [i, 0];
 			disintegrated_positions [i, 1] = (float)disintegration [i, 1];
 		}
+		qvis.GetComponent<QScript> ().active = true;
+		qvis.transform.position = transform.position;
 	}
 
 	void StopQuantization()
@@ -89,6 +95,19 @@ public class CatScript : MonoBehaviour {
 		for (var i = 0; i < quantized_pieces.Length; i++) {
 			quantized_pieces [i] = null;
 		}
+
+		// do warp!
+		var pos = qvis.GetComponent<QScript> ().PickPosition ();
+		var p = transform.position;
+		print (pos.x);
+		print( pos.y);
+		print (p.x);
+		print( p.z);
+		p.x = pos.x;
+		p.z = pos.y;
+		transform.position = p;
+
+		qvis.GetComponent<QScript> ().Clear ();
 	}
 
     void Update() {
