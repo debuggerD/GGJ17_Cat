@@ -27,6 +27,8 @@ public class GameManagerScript : MonoBehaviour {
     public int[,] map_wave_modify;
     int[,] map_wall;
 
+	public int[,] seeing;
+
     protected GameObject[,] m_wallObjects;
     protected GameObject[,] m_moveBlockerObjects;
 
@@ -40,16 +42,20 @@ public class GameManagerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		for (var i = 0; i < seeing.GetLength (0); i++)
+			for (var j = 0; j < seeing.GetLength (1); j++) {
+				seeing [i, j] = 0;
+			}
 	}
 
     void GetMetaData()
     {
-        int[,] result = new int[width, length];
         TextAsset txtFile = (TextAsset)Resources.Load("map_meta") as TextAsset;
         string[] textArray = txtFile.text.Trim().Split('\t');
         width = Int32.Parse(textArray[0]);
         length = Int32.Parse(textArray[1]);
+
+		seeing = new int[width*2, length*2];
     }
 
     int[,] FileToArray(string filename, int w, int h)

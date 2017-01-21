@@ -6,6 +6,7 @@ public class ScientistScript : MonoBehaviour {
 
     public Sprite front;
     public Sprite back;
+    public GameObject sightPrefab;
     float speed = 1.0f;
     float angularSpeed = 1.0f;
     GameObject Cat;
@@ -25,8 +26,9 @@ public class ScientistScript : MonoBehaviour {
     List<patrolBehavior> patrolPoints;
 
     bool chasing = false;
-    float remainTime = 0;
+    float remainTime = 1;
     int patrolIndex = 0;
+    public Quaternion facingQuat = Quaternion.Euler(Vector3.zero);
 
 	// Use this for initialization
 	void Start () {
@@ -35,11 +37,12 @@ public class ScientistScript : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         patrolPoints = new List<patrolBehavior>();
-        patrolPoints.Add(new patrolBehavior(new Vector2(1.5f, 1.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(1.5f, 3.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 3.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 1.5f), 1.0f));
-
+        patrolPoints.Add(new patrolBehavior(new Vector2(-1.5f, -1.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(-1.5f, -3.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(-2.5f, -3.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(-2.5f, -1.5f), 1.0f));
+        GameObject sight = Instantiate(sightPrefab);
+        sight.GetComponent<VisionScript>().scientist = gameObject;
     }
 
     // Update is called once per frame
@@ -52,6 +55,10 @@ public class ScientistScript : MonoBehaviour {
         else
         {
             Patrol();
+        }
+        if (controller.velocity.magnitude > 0.01f)
+        {
+            facingQuat = Quaternion.LookRotation(new Vector3(-controller.velocity.z, 0, controller.velocity.x));
         }
         if (Mathf.Abs(controller.velocity.x) < Mathf.Abs(controller.velocity.z) && controller.velocity.z > 0)
         {
@@ -82,7 +89,7 @@ public class ScientistScript : MonoBehaviour {
 
     void Patrol()
     {
-        if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), patrolPoints[patrolIndex].destination) <= 0.2f)
+        if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), patrolPoints[patrolIndex].destination) <= 0.1f)
         {
             if (remainTime > 0)
             {
