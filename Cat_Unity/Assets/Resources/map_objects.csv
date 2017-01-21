@@ -1,7 +1,7 @@
-1	1	18	4	3	1	cage.png	0
-2	7	20	2	3	0	machine.png	0
-3	11	22	2	1	0	m1.png	0
-4	9	14	1	2	0	door.png	0
-5	4	7	2	1	0	door.png	1
-6	2	0	2	1	0	door.png	1
-7	8	11	1	1	0	food.png	0
+1	1	18	4	3	1	1	1
+2	7	21	2	2	0	3	0	#Machine
+3	11	22	2	1	0	5	0	#ScientistMach
+4	9	14	1	2	0	2	1
+5	4	7	2	1	0	2	0
+6	2	0	2	1	0	2	0
+7	8	11	1	1	0	4	0	#Food?Box?

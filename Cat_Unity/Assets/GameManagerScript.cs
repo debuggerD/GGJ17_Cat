@@ -13,6 +13,11 @@ public class GameManagerScript : MonoBehaviour {
 
     public GameObject BlockerCollider;
 
+    public GameObject Object_Cage;
+    public GameObject Object_Door;
+    public GameObject Object_Laser;
+    public GameObject Object_CatFood;
+
     int width = 0;
     int length = 0;
 
@@ -29,7 +34,9 @@ public class GameManagerScript : MonoBehaviour {
     void Start () {
         GetMetaData();
         ReadMapData();
-	}
+
+        _InitializeGameObjectData();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -440,7 +447,67 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     #endregion
-    
+
+
+    #region Game Objects
+
+    protected Dictionary<int, GameObject> m_objectTable;
+
+    protected void _InitializeGameObjectData()
+    {
+        // Hardcoded Object Classes
+        m_objectTable = new Dictionary<int, GameObject>();
+        m_objectTable.Add(1, Object_Cage);
+        m_objectTable.Add(2, Object_Door);
+        m_objectTable.Add(3, Object_Laser);
+        m_objectTable.Add(4, Object_CatFood);
+
+        // Objects
+        TextAsset txtFile = (TextAsset)Resources.Load("map_objects") as TextAsset;
+        string[] lines = txtFile.text.Trim().Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string[] line = lines[i].Split('\t');
+            if (line.Length == 0)
+            {
+                continue;
+            }
+            if (line[0].Trim().StartsWith("#"))
+            {
+                continue;
+            }
+
+            // Read Object Data
+            //int objectId = int.Parse(line[0]);
+            int gridI = int.Parse(line[1]);
+            int gridJ = int.Parse(line[2]);
+            int objectWidth = int.Parse(line[3]);
+            int objectHeight = int.Parse(line[4]);
+            //int logicRef = int.Parse(line[5])
+            int objectClassId = int.Parse(line[6]);
+            bool isFlip = (int.Parse(line[7]) == 1);
+
+            // Create Object
+            GameObject createdGameObject = null;
+            if (m_objectTable.ContainsKey(objectClassId))
+            {
+                createdGameObject = Instantiate(m_objectTable[objectClassId]);
+            }
+            if (createdGameObject == null)
+            {
+                continue;
+            }
+
+            createdGameObject.transform.position = new Vector3(GetXPos(gridI, gridJ + objectHeight), 0, GetZPos(gridI, gridJ + objectHeight));
+            if (isFlip)
+            {
+                createdGameObject.transform.localScale = new Vector3(-createdGameObject.transform.localScale.x, createdGameObject.transform.localScale.y, createdGameObject.transform.localScale.z);
+            }
+        }
+    }
+
+    #endregion
+
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const float m_kUnitLength = 0.5f;
