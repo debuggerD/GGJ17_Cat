@@ -49,6 +49,7 @@ public class CatScript : MonoBehaviour {
     }
 
     bool quantized = false;
+    public bool controllable = true;
 	int [,] disintegration;
 	float [,] disintegrated_positions;
 	GameObject[] quantized_pieces;
@@ -169,7 +170,7 @@ public class CatScript : MonoBehaviour {
         transform.GetChild(0).rotation = cam.transform.rotation;
 
         // Move by WASD
-        if (!quantized)
+        if (!quantized & controllable)
         {
             Vector3 moveDir = new Vector3(0.0f, 0.0f, 0.0f);
             if (Input.GetKey("w"))

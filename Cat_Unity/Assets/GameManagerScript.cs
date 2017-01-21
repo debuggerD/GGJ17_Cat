@@ -73,9 +73,9 @@ public class GameManagerScript : MonoBehaviour {
 			"Time Travel\nFrom the beginning, again.",
 			"Road to Freedom\nYou finished the game.",
 		};
-		var dt = Time.time - achievement_start_time;
+        //GUI.Box(new Rect(Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10), msgs[achievement_index]);
+        var dt = Time.time - achievement_start_time;
 		if (dt < 5f) {
-			print (dt + " " + Time.time + " " + achievement_start_time);
 			if (dt < 1f) {
 				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
 			} else if (dt < 4f) {
