@@ -68,6 +68,9 @@ public class GameManagerScript : MonoBehaviour {
         map_wave_pass = FileToArray("map_wave_pass_m", width, length);
         map_wave_modify = FileToArray("map_wave_modify_m", width, length);
         map_wall = FileToArray("map_wall_m", width, length);
+
+        _InitializeWallHidingData();
+
         CreateMap();
     }
 
@@ -107,6 +110,12 @@ public class GameManagerScript : MonoBehaviour {
         if (movableRegion != m_currentMoveRegion)
         {
             _NotifyMoveRegionChange(movableRegion);
+        }
+
+        int wallHideRegion = GetWallHideRegion(gridI, gridJ);
+        if (wallHideRegion != m_currentWallHideRegion)
+        {
+            _NotifyWallHideRegionChange(wallHideRegion);
         }
     }
 
@@ -179,6 +188,109 @@ public class GameManagerScript : MonoBehaviour {
     protected void ApplyNormalWallTransform(GameObject wallObj, int i, int j)
     {
         wallObj.transform.position = new Vector3(GetXPos(i, j + 1), 0, GetZPos(i, j + 1));
+    }
+
+    #endregion
+
+
+    #region Wall Hiding
+
+    int[,] m_mapWallHideRegion;
+    Dictionary<int, bool[,]> m_mapWallHidingTable;
+
+    protected int m_currentWallHideRegion;
+
+    protected void _InitializeWallHidingData()
+    {
+        m_currentWallHideRegion = -1;
+
+        // Region
+        m_mapWallHideRegion = new int[width, length];
+        TextAsset txtFile = (TextAsset)Resources.Load("map_wall_hide") as TextAsset;
+        string[] lines = txtFile.text.Trim().Split('\n');
+        for (int i = 0; i < length; i++)
+        {
+            string[] line = lines[i].Split('\t');
+            for (int j = 0; j < width; j++)
+            {
+                m_mapWallHideRegion[j, i] = Int32.Parse(line[j]);
+            }
+        }
+
+        // Hide Map
+        m_mapWallHidingTable = new Dictionary<int, bool[,]>();
+        int lineCount = lines.Length;
+        int readLine = length;
+        while (readLine + 1 < lineCount)
+        {
+            int currentRegion = Int32.Parse(lines[readLine]);
+            ++readLine;
+
+            bool[,] currentTable = new bool[width, length];
+            for (int i = 0; i < length; i++)
+            {
+                string[] line = lines[readLine + i].Split('\t');
+                for (int j = 0; j < width; j++)
+                {
+                    currentTable[j, i] = (Int32.Parse(line[j]) == 1);
+                }
+            }
+
+            m_mapWallHidingTable.Add(currentRegion, currentTable);
+            readLine += length;
+        }
+    }
+
+    public int GetWallHideRegion(float gridI, float gridJ)
+    {
+        if (gridI < 0.0f || gridI >= width || gridJ < 0.0f || gridJ >= length)
+        {
+            return -1;
+        }
+        return m_mapWallHideRegion[(int)Math.Floor(gridI), (int)Math.Floor(gridJ)];
+    }
+
+    protected void _NotifyWallHideRegionChange(int newRegion)
+    {
+        if (newRegion == m_currentWallHideRegion)
+        {
+            return;
+        }
+
+        if (m_mapWallHidingTable == null)
+        {
+            return;
+        }
+
+        bool[,] isHideTable = null;
+        if (m_mapWallHidingTable.ContainsKey(newRegion))
+        {
+            isHideTable = m_mapWallHidingTable[newRegion];
+        }
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < length; j++)
+            {
+                GameObject currentWall = m_wallObjects[i, j];
+                if (currentWall == null)
+                {
+                    continue;
+                }
+
+                WallUpdater updaterObject = currentWall.GetComponent<WallUpdater>();
+                if (isHideTable == null)
+                {
+                    updaterObject.SetIsNeedToUseFullSize(true);
+                }
+                else
+                {
+                    updaterObject.SetIsNeedToUseFullSize(!isHideTable[i, j]);
+                }
+            }
+        }
+
+        m_currentWallHideRegion = newRegion;
     }
 
     #endregion
@@ -328,6 +440,7 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     #endregion
+    
 
     //////////////////////////////////////////////////////////////////////////////// 임시 코드데이터
     protected const float m_kUnitLength = 0.5f;

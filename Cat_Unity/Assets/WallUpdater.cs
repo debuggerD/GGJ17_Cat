@@ -15,10 +15,13 @@ public class WallUpdater : MonoBehaviour {
     protected SpriteRenderer m_mySpriteRenderer;
     protected bool m_isUsingFullSizeWall;
 
+    protected bool m_isNeedToUseFullSize;
+
     // Use this for initialization
     void Start () {
         m_mySpriteRenderer = GetComponent<Renderer>() as SpriteRenderer;
         m_isUsingFullSizeWall = true;
+        m_isNeedToUseFullSize = true;
         CurrentCat = GameObject.FindWithTag("Player");
     }
 	
@@ -42,19 +45,11 @@ public class WallUpdater : MonoBehaviour {
 
     protected bool _CheckIsNeedToUseFullSize()
     {
-        if (CurrentCat == null)
-        {
-            return true;
-        }
+        return m_isNeedToUseFullSize;
+    }
 
-        CatScript catLogic = CurrentCat.GetComponent<CatScript>();
-        if (catLogic == null)
-        {
-            return true;
-        }
-
-        float gridZIndex = gridI - gridJ;
-        float catGridZindex = catLogic.GridPosI - catLogic.GridPosJ;
-        return (catGridZindex < gridZIndex);
+    public void SetIsNeedToUseFullSize(bool isNeedToUseFullSize)
+    {
+        m_isNeedToUseFullSize = isNeedToUseFullSize;
     }
 }

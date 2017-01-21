@@ -10,6 +10,8 @@ public class CatScript : MonoBehaviour {
 	public GameObject CatPiece;
 	public AudioSource QuantumSoundEffect;
 
+    bool isFirstFrame;
+
 	IEnumerator fadeOut()
 	{
 		float t = QuantumSoundEffect.volume;
@@ -71,6 +73,8 @@ public class CatScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        isFirstFrame = true;
+
         rigid = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         cam = GameObject.FindWithTag("MainCamera");
@@ -185,6 +189,13 @@ public class CatScript : MonoBehaviour {
             moveDir.Normalize();
             controller.Move(moveDir * Time.deltaTime * speed);
             
+            m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
+            m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
+
+            GameObject.Find("GameManager").GetComponent<GameManagerScript>().NotifyCatMove(m_lastGridPosI, m_lastGridPosJ, true);
+        }
+        else if (isFirstFrame)
+        {
             m_lastGridPosI = GameManagerScript.GetGridIPos(transform.position.x, transform.position.z);
             m_lastGridPosJ = GameManagerScript.GetGridJPos(transform.position.x, transform.position.z);
 
