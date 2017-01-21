@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class ScientistScript : MonoBehaviour {
 
+    public Sprite front;
+    public Sprite back;
     float speed = 1.0f;
     float angularSpeed = 1.0f;
     GameObject Cat;
     CharacterController controller;
+    SpriteRenderer renderer;
     GameObject cam;
     class patrolBehavior
     {
@@ -30,13 +33,17 @@ public class ScientistScript : MonoBehaviour {
         Cat = GameObject.FindWithTag("Player");
         cam = GameObject.FindWithTag("MainCamera");
         controller = GetComponent<CharacterController>();
+        renderer = GetComponent<SpriteRenderer>();
         patrolPoints = new List<patrolBehavior>();
         patrolPoints.Add(new patrolBehavior(new Vector2(1.5f, 1.5f), 1.0f));
-        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 2.5f), 1.0f));
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        patrolPoints.Add(new patrolBehavior(new Vector2(1.5f, 3.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 3.5f), 1.0f));
+        patrolPoints.Add(new patrolBehavior(new Vector2(2.5f, 1.5f), 1.0f));
+
+    }
+
+    // Update is called once per frame
+    void Update () {
         transform.rotation = cam.transform.rotation;
         if (chasing)
         {
@@ -45,6 +52,26 @@ public class ScientistScript : MonoBehaviour {
         else
         {
             Patrol();
+        }
+        if (Mathf.Abs(controller.velocity.x) < Mathf.Abs(controller.velocity.z) && controller.velocity.z > 0)
+        {
+            renderer.sprite = back;
+            renderer.flipX = true;
+        }
+        else if (Mathf.Abs(controller.velocity.x) < Mathf.Abs(controller.velocity.z) && controller.velocity.z < 0)
+        {
+            renderer.sprite = front;
+            renderer.flipX = false;
+        }
+        else if (Mathf.Abs(controller.velocity.x) > Mathf.Abs(controller.velocity.z) && controller.velocity.x > 0)
+        {
+            renderer.sprite = front;
+            renderer.flipX = true;
+        }
+        else if (Mathf.Abs(controller.velocity.x) > Mathf.Abs(controller.velocity.z) && controller.velocity.x < 0)
+        {
+            renderer.sprite = back;
+            renderer.flipX = false;
         }
     }
 
