@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScientistScript : MonoBehaviour {
 
@@ -79,7 +80,7 @@ public class ScientistScript : MonoBehaviour {
                 }
                 else
                 {
-                    //renew scene
+                    SceneManager.LoadScene("GameScene_js");
                 }
                 cageTime += Time.deltaTime;
             }
