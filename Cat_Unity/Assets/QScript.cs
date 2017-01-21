@@ -101,7 +101,7 @@ public class QScript : MonoBehaviour {
 					var x = (kv.Key.Key + sub_tx) / 4f;
 					var z = (kv.Key.Value + sub_ty) / 4f;
 					var gi = (int)GameManagerScript.GetGridIPos (x, z);
-					var gj = (int)GameManagerScript.GetGridIPos (x, z);
+					var gj = (int)GameManagerScript.GetGridJPos (x, z);
 					if (map_move[gi, gj] == 0)
 						break;
 					return new Vector2 ((kv.Key.Key + sub_tx) / 4f, (kv.Key.Value + sub_ty) / 4f);

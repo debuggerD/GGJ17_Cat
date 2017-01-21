@@ -13,6 +13,7 @@ public class ScientistScript : MonoBehaviour {
     CharacterController controller;
     SpriteRenderer spriteRenderer;
     GameObject cam;
+    GameObject manager;
     class patrolBehavior
     {
         public Vector2 destination;
@@ -34,6 +35,7 @@ public class ScientistScript : MonoBehaviour {
 	void Start () {
         Cat = GameObject.FindWithTag("Player");
         cam = GameObject.FindWithTag("MainCamera");
+        manager = GameObject.Find("GameManager");
         controller = GetComponent<CharacterController>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         patrolPoints = new List<patrolBehavior>();
@@ -47,6 +49,11 @@ public class ScientistScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (Vector2.Distance(new Vector2(Cat.transform.position.x, Cat.transform.position.z), new Vector2(transform.position.x, transform.position.z)) < 1.0f)
+        {
+            manager.GetComponent<GameManagerScript>().GetAchivement(GameManagerScript.Achivements.TimeTravel);
+            print("Catch");
+        }
         transform.GetChild(0).rotation = cam.transform.rotation;
         if (chasing)
         {

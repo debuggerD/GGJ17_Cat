@@ -152,6 +152,7 @@ public class CatScript : MonoBehaviour {
 		p.x = pos.x;
 		p.z = pos.y;
 		var gms = manager.GetComponent<GameManagerScript> ();
+		gms.warp_count += 1;
 		gms.NotifyCatMove(GameManagerScript.GetGridIPos(p.x, p.z), GameManagerScript.GetGridJPos(p.x, p.z), false);
 		transform.position = p;
 
@@ -213,6 +214,8 @@ public class CatScript : MonoBehaviour {
 		bool force_q = false;
 		if (quantized && !qvis.GetComponent<QScript> ().InCatomCloudForm ()) {
 			force_q = true;
+
+			manager.GetComponent<GameManagerScript> ().GetAchivement (GameManagerScript.Achivements.HeisenburgUncatiantyPrinciple);
 		}
 		if (force_q || Input.GetKeyDown ("q")) {
 			
@@ -285,18 +288,6 @@ public class CatScript : MonoBehaviour {
 
     }
 
-    void OnTriggerEnter(Collider collider)
-    {
-        print("Trigger!!!");
-        if (collider.gameObject.name == "Scientist")
-        {
-            print("scientist!!!!!!!!!!!!");
-        }
-    }
-    void OnCollisionEnter(Collision collision)
-    {
-        print("collision!!");
-    }
 
     protected Vector3 default_rotation = new Vector3(26.57f, -45, 0);
 
