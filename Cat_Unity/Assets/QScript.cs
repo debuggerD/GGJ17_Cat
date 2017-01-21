@@ -46,6 +46,41 @@ public class QScript : MonoBehaviour {
 	int sub_tx;
 	int sub_ty;
 
+	float GetAttractorFlowDelta(int dx, int dy) {
+		float d = Mathf.Sqrt (dx * dx + dy * dy);
+		if (d > 6)
+			return 0f;
+		return (6f-d) * 15 / 6;
+	}
+	int GetAttractorFlow(int x, int y) {
+		int[,] mod  = manager.GetComponent<GameManagerScript> ().map_wave_modify;
+		float p = 0;
+		for (int i = (sub_tx+x)/2 - 2; i <= (sub_tx+x)/2 + 2; i++) {
+			if (i < 0)
+				continue;
+			if (i >= mod.GetLength (1))
+				continue;
+			for (int j = (sub_ty+y)/2 - 2; j <= (sub_ty+y)/2 + 2; j++) {
+				if (j < 0)
+					continue;
+				if (j >= mod.GetLength (0))
+					continue;
+				if (mod [j, i] == 1) {
+					// attractor
+					float d = GetAttractorFlowDelta(i*2+1-x,j*2+1-y);
+					if (Mathf.Abs (d) > Mathf.Abs (p))
+						p = d;
+				} else if (mod [j, i] == 2) {
+					// disperse
+					float d = -GetAttractorFlowDelta(i*2+1-x-sub_tx,j*2+1-y-sub_ty);
+					if (Mathf.Abs (d) > Mathf.Abs (p))
+						p = d;
+				}
+			}
+		}
+		return (int)p;
+	}
+
 	public bool InCatomCloudForm()
 	{
 		return energy.Count > 0;
@@ -53,13 +88,24 @@ public class QScript : MonoBehaviour {
 
 	public Vector2 PickPosition()
 	{
-		//int pick = Random.Range (0, 10000);
-		int pick = Random.Range (0, energy.Count);
-		foreach(var kv in energy) {
-			//pick -= kv.Value;
-			pick -= 1;
-			if (pick < 0){
-				return new Vector2((kv.Key.Key+sub_tx)/4f, (kv.Key.Value+sub_ty)/4f);
+		if (energy.Count == 0)
+			return lastValidPosition;
+		int[,] map_move = manager.GetComponent<GameManagerScript> ().map_move;
+		for (int i = 0; i < 10; i++) {
+			//int pick = Random.Range (0, 10000);
+			int pick = Random.Range (0, energy.Count);
+			foreach (var kv in energy) {
+				//pick -= kv.Value;
+				pick -= 1;
+				if (pick < 0) {
+					var x = (kv.Key.Key + sub_tx) / 4f;
+					var z = (kv.Key.Value + sub_ty) / 4f;
+					var gi = (int)GameManagerScript.GetGridIPos (x, z);
+					var gj = (int)GameManagerScript.GetGridIPos (x, z);
+					if (map_move[gi, gj] == 0)
+						break;
+					return new Vector2 ((kv.Key.Key + sub_tx) / 4f, (kv.Key.Value + sub_ty) / 4f);
+				}
 			}
 		}
 		return lastValidPosition;
@@ -117,7 +163,9 @@ public class QScript : MonoBehaviour {
 					has = true;
 				}
 				if (v > nv) {
-					int f = GetFlow (v, nv) * 100 / dir [2];
+					int f = GetFlow (v, nv) * 100 / dir [2] + GetAttractorFlow(k.Key,k.Value) - GetAttractorFlow(nk.Key,nk.Value);
+					if (f > v / 4)
+						f = v / 4;
 					delta -= f;
 					if (!has) {
 						if (next.ContainsKey (nk)) {
@@ -127,7 +175,10 @@ public class QScript : MonoBehaviour {
 						}
 					}
 				} else if (v < nv) {
-					delta += GetFlow (nv, v) * 100 / dir[2] ;
+					int f = GetFlow (nv, v) * 100 / dir[2] + GetAttractorFlow(k.Key,k.Value) - GetAttractorFlow(nk.Key,nk.Value);
+					if (f > nv / 4)
+						f = nv / 4;
+					delta += f;
 				}
 			}
 			next[k] = v + delta;
