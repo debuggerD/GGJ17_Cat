@@ -16,8 +16,8 @@ public class GameManagerScript : MonoBehaviour {
 
     int[,] map_move;
     int[,] map_height;
-    int[,] map_wave_pass;
-    int[,] map_wave_modify;
+    public int[,] map_wave_pass;
+    public int[,] map_wave_modify;
     int[,] map_wall;
 
     protected GameObject[,] m_wallObjects;
