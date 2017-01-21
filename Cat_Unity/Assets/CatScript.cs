@@ -97,7 +97,7 @@ public class CatScript : MonoBehaviour {
 			const float scale = 130f;
 			p.x -= (disintegration [i, 0]-57f+30f) / scale;
 			p.z -= (disintegration [i, 0]-57f+30f) / scale;
-			p.y -= (disintegration [i, 1]-68.5f+40f) / scale*1.414f;
+			p.y -= (disintegration [i, 1]-68.5f+0f) / scale*1.414f;
 			go.transform.position = p;
 			disintegrated_positions [i, 0] = (float)disintegration [i, 0];
 			disintegrated_positions [i, 1] = (float)disintegration [i, 1];
@@ -212,7 +212,7 @@ public class CatScript : MonoBehaviour {
 				disintegrated_positions [i, 1] = y;
 				p.x -= (x-57f+30f) / scale;
 				p.z -= (x-57f+30f) / scale;
-				p.y -= (y-68.5f+40f) / scale*1.414f;
+				p.y -= (y-68.5f+0f) / scale*1.414f;
 				var go = quantized_pieces [i];
 				go.transform.position = p;
 			}
