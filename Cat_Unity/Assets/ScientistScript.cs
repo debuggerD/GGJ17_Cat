@@ -80,7 +80,7 @@ public class ScientistScript : MonoBehaviour {
                 }
                 else
                 {
-                    SceneManager.LoadScene("GameScene_js");
+                    SceneManager.LoadScene("GameScene_ys");
                 }
                 cageTime += Time.deltaTime;
             }
