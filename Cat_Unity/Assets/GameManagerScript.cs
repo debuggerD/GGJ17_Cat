@@ -48,7 +48,7 @@ public class GameManagerScript : MonoBehaviour {
     }
 	public int warp_count = 0;
 	int[] achievements = new int[]{0,0,0,0,0};
-	float achievement_start_time = - 100;
+	float achievement_start_time = 100- 100;
 	int achievement_index;
 	public enum Achivements {
 		LuckyCat,
@@ -94,6 +94,7 @@ public class GameManagerScript : MonoBehaviour {
 		GUIStyle gs = new GUIStyle ();
 		gs.fontSize = Mathf.Min(Screen.width/40, Screen.height / 10);
 		gs.normal.background = MakeTex (2, 2, new Color (0.3f, 0.7f, 1.0f, 0.7f));
+		gs.clipping = TextClipping.Clip;
 		if (dt < 5f) {
 			if (dt < 1f) {
 				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index],gs);
