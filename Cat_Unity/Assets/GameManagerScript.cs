@@ -225,6 +225,11 @@ public class GameManagerScript : MonoBehaviour {
         {
             for (int j = 0; j < length; j += 2)
             {
+                if (i >= 10 && j < 72)
+                {
+                    continue;
+                }
+
                 GameObject createdTile = Instantiate(Tile);
                 createdTile.transform.position = new Vector3(GetXPos(i, j) + halfTileLength, 0, GetZPos(i, j) + halfTileLength);
             }
