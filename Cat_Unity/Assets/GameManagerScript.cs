@@ -17,6 +17,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject Object_Door;
     public GameObject Object_Laser;
     public GameObject Object_CatFood;
+    public GameObject Object_Computer;
 
     int width = 0;
     int length = 0;
@@ -555,6 +556,7 @@ public class GameManagerScript : MonoBehaviour {
         m_objectTable.Add(2, Object_Door);
         m_objectTable.Add(3, Object_Laser);
         m_objectTable.Add(4, Object_CatFood);
+        m_objectTable.Add(5, Object_Computer);
 
         // Objects
         TextAsset txtFile = (TextAsset)Resources.Load("map_objects") as TextAsset;
