@@ -18,6 +18,8 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject Object_Laser;
     public GameObject Object_CatFood;
     public GameObject Object_Computer;
+    public GameObject Object_Box;
+    public GameObject Object_Desk;
 
     int width = 0;
     int length = 0;
@@ -226,7 +228,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             for (int j = 0; j < length; j += 2)
             {
-                if (i >= 10 && j < 72)
+                if (i >= 10 && (j < 24 || (j >= 48 && j < 72)))
                 {
                     continue;
                 }
@@ -557,6 +559,8 @@ public class GameManagerScript : MonoBehaviour {
         m_objectTable.Add(3, Object_Laser);
         m_objectTable.Add(4, Object_CatFood);
         m_objectTable.Add(5, Object_Computer);
+        m_objectTable.Add(6, Object_Box);
+        m_objectTable.Add(7, Object_Desk);
 
         // Objects
         TextAsset txtFile = (TextAsset)Resources.Load("map_objects") as TextAsset;
