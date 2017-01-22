@@ -12,6 +12,11 @@ public class OpeningScript : MonoBehaviour {
 			Resources.Load("story2") as Texture,
 			Resources.Load("story3") as Texture,
 		};
+		clips = new AudioClip[] {
+			Resources.Load("s1",typeof(AudioClip)) as AudioClip,
+			Resources.Load("s2",typeof(AudioClip)) as AudioClip,
+			Resources.Load("s3",typeof(AudioClip)) as AudioClip,
+		};
 	}
 	
 	// Update is called once per frame
@@ -19,10 +24,12 @@ public class OpeningScript : MonoBehaviour {
 		
 	}
 	Texture[] frames;
-	float frameTime = 5.0f;
+	AudioClip[] clips;
+	float frameTime = 18.0f;
 	private int frame=-1;
 	private float nextFrameTime = 0.0f;
 	float baseTime = 0.0f;
+	bool sound_played = false;
 	void OnGUI()
 	{
 		if (frame < frames.Length) {
@@ -31,6 +38,7 @@ public class OpeningScript : MonoBehaviour {
 				baseTime = Time.time;
 				nextFrameTime += frameTime;
 				GUI.color = new Color (1f, 1f, 1f, 1f);
+				sound_played = false;
 			}
 			if (frame == frames.Length) {
 				SceneManager.LoadScene ("GameScene_js");
@@ -38,10 +46,22 @@ public class OpeningScript : MonoBehaviour {
 				var dt = Time.time - baseTime;
 				if (dt < 1)
 					GUI.color = new Color (1f, 1f, 1f, dt);
-				else if (dt < 4)
+				else if (dt < 17) {
 					GUI.color = new Color (1f, 1f, 1f, 1f);
-				else if (dt < 5)
-					GUI.color = new Color (1f, 1f, 1f, 5 - dt);
+					if (!sound_played) {
+						sound_played = true;
+						var audio = GetComponent<AudioSource>(); 
+						audio.PlayOneShot (clips [frame]);
+					}
+					if (Input.anyKey){
+						var audio = GetComponent<AudioSource>(); 
+						audio.Stop ();
+						baseTime = Time.time - 17;
+						nextFrameTime = baseTime + 1;
+					}
+				}
+				else if (dt < 18)
+					GUI.color = new Color (1f, 1f, 1f, 18 - dt);
 				GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), frames [frame]);
 			}
 		}
