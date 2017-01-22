@@ -247,7 +247,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             for (int j = 0; j < length; j += 2)
             {
-                if (i >= 10 && (j < 24 || (j >= 48 && j < 72)))
+                if (i >= 8 && (j < 24 || (j >= 48 && j < 72)))
                 {
                     continue;
                 }
@@ -589,7 +589,7 @@ public class GameManagerScript : MonoBehaviour {
         for (int i = 0; i < lines.Length; i++)
         {
             string[] line = lines[i].Split('\t');
-            if (line.Length == 0)
+            if (line.Length < 7)
             {
                 continue;
             }
@@ -600,8 +600,8 @@ public class GameManagerScript : MonoBehaviour {
 
             // Read Object Data
             //int objectId = int.Parse(line[0]);
-            int gridI = int.Parse(line[1]);
-            int gridJ = int.Parse(line[2]);
+            float gridI = float.Parse(line[1]);
+            float gridJ = float.Parse(line[2]);
             int objectWidth = int.Parse(line[3]);
             int objectHeight = int.Parse(line[4]);
             //int logicRef = int.Parse(line[5])
@@ -643,7 +643,15 @@ public class GameManagerScript : MonoBehaviour {
             createdGameObject.transform.position = new Vector3(GetXPos(gridI, gridJ + objectHeight), 0, GetZPos(gridI, gridJ + objectHeight));
             if (isFlip)
             {
-                createdGameObject.transform.localScale = new Vector3(-createdGameObject.transform.localScale.x, createdGameObject.transform.localScale.y, createdGameObject.transform.localScale.z);
+                if (objectClassId == kObjectClassId_Cat)
+                {
+                    Transform spirteTranform = createdGameObject.transform.GetChild(0);
+                    spirteTranform.transform.localScale = new Vector3(-spirteTranform.transform.localScale.x, spirteTranform.transform.localScale.y, spirteTranform.transform.localScale.z);
+                }
+                else
+                {
+                    createdGameObject.transform.localScale = new Vector3(-createdGameObject.transform.localScale.x, createdGameObject.transform.localScale.y, createdGameObject.transform.localScale.z);
+                }   
             }
         }
     }
