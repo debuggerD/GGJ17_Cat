@@ -43,9 +43,10 @@ public class OpeningScript : MonoBehaviour {
 	float baseTime = 0.0f;
 	bool sound_played = false;
 	string[] subs = new string[] {
-		"As you already know, cats are made up of catom (which means cat+atom).\nScientists like Schrödinger try to research catom and\n    you know the Schrödinger's cat experiment.",
-		"Here, a cat named Tom watched its friend becoming both alive and dead,\n          or in a quantum superposition.\nTom is scared. Tom wants to run away from here.",
-		"Due to unfortunate accident, Tom is showered by a W-ray.\nNow Tom is able to activate it's catom's wave function and\n     become an WAVE!"
+		"As you already know, cats are made up of catom\n" +
+		"                       (which means cat+atom).\nScientists like Schrödinger try to research catom and\n    you know the Schrödinger's cat experiment.",
+		"A cat named Tom watched its friend becoming both alive and dead,\n          or in a quantum superposition.\nTom is scared. Tom wants to run away from here.",
+		"Due to unfortunate accident, Tom is showered by a W-ray.\nNow Tom is able to activate it's catom's wave function and\n     become a WAVE!"
 	};
 	private Texture2D MakeTex( int width, int height, Color col )
 	{
