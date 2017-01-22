@@ -21,6 +21,9 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject Object_Box;
     public GameObject Object_Desk;
 
+    public const int kObjectClassId_Cat = 9;
+    public List<GameObject> Object_Cats;
+
     int width = 0;
     int length = 0;
 
@@ -562,6 +565,8 @@ public class GameManagerScript : MonoBehaviour {
         m_objectTable.Add(6, Object_Box);
         m_objectTable.Add(7, Object_Desk);
 
+        m_objectTable.Add(kObjectClassId_Cat, null);     // 고양이 목숨은 아홉개다!! 
+
         // Objects
         TextAsset txtFile = (TextAsset)Resources.Load("map_objects") as TextAsset;
         string[] lines = txtFile.text.Trim().Split('\n');
@@ -589,9 +594,30 @@ public class GameManagerScript : MonoBehaviour {
 
             // Create Object
             GameObject createdGameObject = null;
-            if (m_objectTable.ContainsKey(objectClassId))
+            if (objectClassId == kObjectClassId_Cat)
             {
-                createdGameObject = Instantiate(m_objectTable[objectClassId]);
+                // Cat
+                int catIndex = int.Parse(line[8]);
+                if (catIndex < Object_Cats.Count)
+                {
+                    GameObject catPrefab = Object_Cats[catIndex];
+                    if (catPrefab != null)
+                    {
+                        createdGameObject = Instantiate(catPrefab);
+                    }
+                }
+            }
+            else
+            {
+                // Normal Objects
+                if (m_objectTable.ContainsKey(objectClassId))
+                {
+                    GameObject creatingPrefab = m_objectTable[objectClassId];
+                    if (creatingPrefab != null)
+                    {
+                        createdGameObject = Instantiate(creatingPrefab);
+                    }
+                }
             }
             if (createdGameObject == null)
             {
