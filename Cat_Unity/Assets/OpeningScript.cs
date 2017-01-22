@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class OpeningScript : MonoBehaviour {
 
+	public AudioClip openingBGMclip;
+	private AudioSource openingBGM;
+
 	// Use this for initialization
 	void Start () {
 		frames = new Texture[] {
@@ -17,6 +20,11 @@ public class OpeningScript : MonoBehaviour {
 			Resources.Load("s2",typeof(AudioClip)) as AudioClip,
 			Resources.Load("s3",typeof(AudioClip)) as AudioClip,
 		};
+		openingBGM = gameObject.AddComponent<AudioSource>();
+		openingBGM.clip = openingBGMclip;
+		openingBGM.volume = 0.1f;
+		openingBGM.loop = true;
+		openingBGM.Play();
 	}
 	
 	// Update is called once per frame

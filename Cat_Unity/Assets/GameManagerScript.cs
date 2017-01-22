@@ -70,30 +70,46 @@ public class GameManagerScript : MonoBehaviour {
 		achievements[(int)a] = 1;
 	}
 
+	private Texture2D MakeTex( int width, int height, Color col )
+	{
+		Color[] pix = new Color[width * height];
+		for( int i = 0; i < pix.Length; ++i )
+		{
+			pix[ i ] = col;
+		}
+		Texture2D result = new Texture2D( width, height );
+		result.SetPixels( pix );
+		result.Apply();
+		return result;
+	}
+
 	void OnGUI()
 	{
 		var msgs = new string[] {
-			"Lucky Cat\nYou exit the first room with just one try!",
-			"Cat Having a Bad Day\nYou are unlucky...",
-			"Heisenburg Un`cat'ianty Principle\nYou are observed therefore you exist.",
-			"Time Travel\nFrom the beginning, again.",
-			"Road to Freedom\nYou finished the game.",
+			"Achievement: Lucky Cat\nYou exit the first room with just one try!",
+			"Achievement: Cat Having a Bad Day\nYou are unlucky...",
+			"Achievement: Heisenburg Un`cat'ianty Principle\nYou are observed therefore you exist.",
+			"Achievement: Time Travel\nFrom the beginning, again.",
+			"Achievement: Road to Freedom\nYou finished the game.",
 		};
         //GUI.Box(new Rect(Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10), msgs[achievement_index]);
         var dt = Time.time - achievement_start_time;
+		GUIStyle gs = new GUIStyle ();
+		gs.fontSize = Mathf.Min(Screen.width/40, Screen.height / 10);
+		gs.normal.background = MakeTex (2, 2, new Color (0.3f, 0.7f, 1.0f, 0.7f));
 		if (dt < 5f) {
 			if (dt < 1f) {
-				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index],gs);
 			} else if (dt < 4f) {
 				dt = (dt - 1f) / 3f;
-				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10), msgs[achievement_index]);
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10), msgs[achievement_index],gs);
 			} else {
 				dt = (5f-dt);
-				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index]);
+				GUI.Box (new Rect (Screen.width / 10, 0, Screen.width * 8 / 10, Screen.height / 10*dt), msgs[achievement_index],gs);
 			}
 		}
 		if (warp_count == 0) {
-			GUI.Box (new Rect(Screen.width*0.25f, Screen.height*0.17f, Screen.width*0.5f,Screen.height*0.15f), "Press [Q] to\nActivate 'Wave' function\n(or `Q'uantize).\nUse WASD to move");
+			GUI.Box (new Rect(Screen.width*0.25f, Screen.height*0.12f, Screen.width*0.5f,Screen.height*0.21f), "Press [Q] to\nActivate 'Wave' function\n(or `Q'uantize).\nUse WASD to move",gs);
 		}
 	}
 
