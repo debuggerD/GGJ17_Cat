@@ -20,6 +20,8 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject Object_Computer;
     public GameObject Object_Box;
     public GameObject Object_Desk;
+	public GameObject Object_ExitDecal;
+	public GameObject Object_LieDecal;
 
     public const int kObjectClassId_Cat = 9;
     public List<GameObject> Object_Cats;
@@ -580,7 +582,9 @@ public class GameManagerScript : MonoBehaviour {
         m_objectTable.Add(4, Object_CatFood);
         m_objectTable.Add(5, Object_Computer);
         m_objectTable.Add(6, Object_Box);
-        m_objectTable.Add(7, Object_Desk);
+		m_objectTable.Add(7, Object_Desk);
+		m_objectTable.Add(8, Object_ExitDecal);
+		m_objectTable.Add(10, Object_LieDecal);
 
         m_objectTable.Add(kObjectClassId_Cat, null);     // 고양이 목숨은 아홉개다!! 
 
