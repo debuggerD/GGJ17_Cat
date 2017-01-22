@@ -166,8 +166,20 @@ public class CatScript : MonoBehaviour {
 
 	}
 
+	IEnumerator GoEnding()
+	{
+		yield return new WaitForSeconds (2.0f);
+		UnityEngine.SceneManagement.SceneManager.LoadScene ("EndingScene");
+
+	}
+
     void Update() {
         transform.GetChild(0).rotation = cam.transform.rotation;
+
+		if (transform.position.x < 1.5f) {
+			manager.GetComponent<GameManagerScript> ().GetAchivement (GameManagerScript.Achivements.RoadToFreedom);
+			StartCoroutine (GoEnding ());
+		}
 
         // Move by WASD
         if (!quantized & controllable)

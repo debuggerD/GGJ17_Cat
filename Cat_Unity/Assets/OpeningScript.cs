@@ -70,7 +70,7 @@ public class OpeningScript : MonoBehaviour {
 				sound_played = false;
 			}
 			if (frame == frames.Length) {
-				SceneManager.LoadScene ("GameScene_js");
+				SceneManager.LoadScene ("GameScene_ys");
 			} else {
 				var dt = Time.time - baseTime;
 				if (dt < 1)

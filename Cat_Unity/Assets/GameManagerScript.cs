@@ -51,7 +51,7 @@ public class GameManagerScript : MonoBehaviour {
     }
 	public int warp_count = 0;
 	int[] achievements = new int[]{0,0,0,0,0};
-	float achievement_start_time = 100- 100;
+	float achievement_start_time = - 100;
 	int achievement_index;
 	public enum Achivements {
 		LuckyCat,
